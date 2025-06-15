@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Personalized Story Generator</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body id="story-body">
+    <div class="container">
+      <h1>Personalized Story Generator</h1>
+
+      <div id="api-key-section">
+        <label for="apiKey">Gemini API Key:</label>
+        <input
+          type="password"
+          id="apiKey"
+          placeholder="Enter your Gemini API Key"
+        />
+        <button id="saveApiKey">Save Key</button>
+        <p>
+          <small
+            >Get your API key from
+            <a href="https://aistudio.google.com/app/apikey" target="_blank"
+              >Google AI Studio</a
+            >.</small
+          >
+        </p>
+      </div>
+
+      <div id="setup-screen">
+        <h2>Create Your Story</h2>
+        <label for="story-template">Story Template:</label>
+        <select id="story-template">
+          <option value="adventure">Adventure</option>
+          <option value="mystery">Mystery</option>
+          <option value="fantasy">Fantasy</option>
+          <option value="sci-fi">Sci-Fi</option>
+        </select>
+
+        <label for="language">Language:</label>
+        <input
+          type="text"
+          id="language"
+          value="English"
+          placeholder="language (e.g., English)"
+        />
+
+        <h3>Protagonist</h3>
+        <input
+          type="text"
+          id="protagonist-name"
+          placeholder="Protagonist Name (e.g., Elara)"
+        />
+        <input
+          type="number"
+          id="protagonist-age"
+          placeholder="Age (e.g., 25)"
+        />
+        <input
+          type="text"
+          id="protagonist-occupation"
+          placeholder="Occupation (e.g., Explorer)"
+        />
+
+        <h3>Setting</h3>
+        <input
+          type="text"
+          id="setting-time"
+          placeholder="Time Period (e.g., Ancient Times, 25th Century)"
+        />
+        <input
+          type="text"
+          id="setting-location"
+          placeholder="Location (e.g., Whispering Woods, Neo-Tokyo)"
+        />
+
+        <h3>Conflict</h3>
+        <textarea
+          id="conflict-description"
+          placeholder="Central Conflict (e.g., Retrieve the stolen artifact)"
+        ></textarea>
+
+        <h3>Sidekick (Optional)</h3>
+        <input
+          type="text"
+          id="sidekick-name"
+          placeholder="Sidekick Name (e.g., Pip)"
+        />
+        <input
+          type="text"
+          id="sidekick-personality"
+          placeholder="Sidekick Personality (e.g., Witty and loyal)"
+        />
+
+        <h3>Antagonist (Optional)</h3>
+        <input
+          type="text"
+          id="antagonist-name"
+          placeholder="Antagonist Name (e.g., Lord Malakor)"
+        />
+        <input
+          type="text"
+          id="antagonist-traits"
+          placeholder="Antagonist Traits (e.g., Cunning, ruthless)"
+        />
+        <input
+          type="text"
+          id="antagonist-motivation"
+          placeholder="Antagonist Motivation (e.g., To rule the kingdom)"
+        />
+
+        <button id="start-story-btn">Start My Story!</button>
+      </div>
+
+      <div id="story-screen" style="display: none">
+        <h2 id="story-title">Your Story Unfolds...</h2>
+        <div id="story-output">
+          <p>Loading story...</p>
+        </div>
+        <div id="choices-container">
+          <!-- Choices will be dynamically added here -->
+        </div>
+        <div id="story-controls">
+          <button id="read-aloud-btn">Read Aloud</button>
+          <button id="restart-btn">Start New Story</button>
+          <button id="share-story-btn">Share Story</button>
+        </div>
+        <button id="toggle-full-story-btn">Show Full Story</button>
+        <div id="full-story-log" style="display: none">
+          <h3>Full Story So Far:</h3>
+          <div id="full-story-content"></div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+  </body>
+</html>

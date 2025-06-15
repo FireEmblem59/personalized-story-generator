@@ -1,0 +1,484 @@
+/* --- General Body and Container (Keep existing or adapt) --- */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0; /* Remove padding if body handles full background */
+  color: #333;
+  transition: background-image 0.5s ease-in-out,
+    background-color 0.5s ease-in-out;
+  background-color: #f4f4f4;
+  min-height: 100vh;
+  display: flex; /* For centering container if needed */
+  align-items: center; /* For centering container */
+  justify-content: center; /* For centering container */
+}
+
+.container {
+  width: 90%;
+  max-width: 800px;
+  margin: 20px auto; /* Auto margins for horizontal centering */
+  background: rgba(255, 255, 255, 0.9);
+  padding: 25px 30px;
+  border-radius: 12px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+  text-align: center; /* Center h1, h2 */
+}
+
+h1 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+h2 {
+  font-size: 1.8em;
+  margin-bottom: 25px;
+  color: #34495e;
+}
+h3 {
+  font-size: 1.4em;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: #34495e;
+}
+
+/* --- API Key and Setup Screen (Keep existing or adapt) --- */
+#api-key-section {
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #e9ecef;
+  border-radius: 8px;
+  text-align: center;
+}
+#api-key-section label {
+  margin-right: 10px;
+  font-weight: 500;
+}
+#api-key-section input[type="password"] {
+  width: 60%;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+#api-key-section button {
+  padding: 10px 18px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+#api-key-section button:hover {
+  background-color: #0056b3;
+}
+
+#setup-screen label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  text-align: left;
+  color: #495057;
+}
+#setup-screen input,
+#setup-screen select,
+#setup-screen textarea {
+  display: block;
+  width: calc(100% - 22px); /* Account for padding */
+  margin-bottom: 15px;
+  padding: 12px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 1em;
+  box-sizing: border-box; /* Important for width calculation */
+}
+#setup-screen textarea {
+  height: 80px;
+  resize: vertical;
+}
+#start-story-btn {
+  /* Specific styling for the main action button */
+  display: inline-block;
+  background: #28a745; /* Green for go */
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.1em;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  margin-top: 15px;
+}
+#start-story-btn:hover {
+  background: #218838;
+}
+#start-story-btn:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+/* --- Story Screen Enhancements --- */
+#story-screen {
+  text-align: left; /* Align story text to the left */
+}
+
+#story-screen h2#story-title {
+  text-align: center;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 15px;
+  margin-bottom: 25px;
+}
+
+#story-output {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  min-height: 150px; /* Ensure space for story */
+  border: 1px solid #e9ecef;
+  font-size: 1.1em;
+  line-height: 1.7;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centers horizontally */
+  justify-content: center; /* centers vertically inside min-height */
+  text-align: center; /* centers text content */
+}
+
+#story-output p {
+  margin-top: 0;
+}
+
+/* Loader within story output */
+#story-output .loader {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #007bff; /* Blue loader */
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+}
+
+#story-output p:has(+ .loader) {
+  /* If text precedes loader */
+  text-align: center;
+  color: #6c757d;
+}
+
+#choices-container {
+  margin-bottom: 25px;
+  display: grid; /* Use grid for potentially multiple columns if needed */
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px; /* Space between choice buttons */
+}
+
+#choices-container button {
+  display: block;
+  width: 100%;
+  background: #007bff;
+  color: white;
+  padding: 15px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.05em;
+  text-align: left;
+  transition: background-color 0.2s, transform 0.1s;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#choices-container button:hover {
+  background: #0056b3;
+  transform: translateY(-2px);
+}
+#choices-container button:active {
+  transform: translateY(0px);
+}
+
+/* If you want two choices side-by-side on larger screens: */
+@media (min-width: 600px) {
+  #choices-container {
+    grid-template-columns: repeat(
+      2,
+      minmax(250px, 1fr)
+    ); /* Responsive columns */
+  }
+  #choices-container button {
+    text-align: center; /* Center text if buttons are side-by-side */
+  }
+}
+
+#story-controls {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  flex-wrap: wrap; /* Allow buttons to wrap on small screens */
+  gap: 10px; /* Space between control buttons */
+  justify-content: center; /* Center control buttons */
+}
+
+#story-controls button,
+#toggle-full-story-btn {
+  /* General styling for control buttons */
+  padding: 10px 18px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.95em;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+#read-aloud-btn {
+  background-color: #17a2b8; /* Teal */
+  color: white;
+}
+#read-aloud-btn:hover {
+  background-color: #138496;
+}
+
+#restart-btn {
+  background-color: #dc3545; /* Red */
+  color: white;
+}
+#restart-btn:hover {
+  background-color: #c82333;
+}
+
+#share-story-btn {
+  background-color: #ffc107; /* Yellow */
+  color: #212529;
+}
+#share-story-btn:hover {
+  background-color: #e0a800;
+}
+
+#toggle-full-story-btn {
+  background-color: #6c757d; /* Grey */
+  color: white;
+  margin-top: 15px; /* Give it some space if it's below other controls */
+  width: 100%; /* Make it full width for emphasis */
+  max-width: 300px; /* But not too wide */
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+#toggle-full-story-btn:hover {
+  background-color: #5a6268;
+}
+
+#full-story-log {
+  margin-top: 30px;
+  padding: 20px;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+}
+
+#full-story-log h3 {
+  text-align: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed #ced4da;
+}
+
+#full-story-content {
+  max-height: 350px;
+  overflow-y: auto;
+  padding-right: 10px;
+  font-size: 0.95em;
+  line-height: 1.6;
+  text-align: left;
+}
+#full-story-content p {
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px dotted #ffffff;
+}
+#full-story-content p:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+#full-story-content hr {
+  display: none; /* Hiding the JS-inserted hr, using p border instead */
+}
+
+/* --- Themed Backgrounds and Text Colors (Keep existing or adapt) --- */
+/* Fantasy Theme */
+body.fantasy-theme {
+  background-image: url("https://source.unsplash.com/1920x1080/?fantasy,enchanted,forest");
+  background-size: cover;
+  background-position: center center;
+  background-attachment: fixed; /* Keeps background static on scroll */
+}
+body.fantasy-theme .container {
+  background: rgba(20, 10, 0, 0.8); /* Darker, earthy tone */
+  color: #f0e6d2; /* Parchment like text */
+  border: 1px solid rgba(240, 230, 210, 0.3);
+}
+body.fantasy-theme h1,
+body.fantasy-theme h2,
+body.fantasy-theme h3 {
+  color: #ffd700; /* Gold */
+}
+body.fantasy-theme #story-output {
+  background: rgba(40, 20, 10, 0.7);
+  border-color: rgba(240, 230, 210, 0.2);
+}
+body.fantasy-theme #choices-container button {
+  background-color: #8b4513; /* SaddleBrown */
+  border: 1px solid #daa520; /* Goldenrod border */
+}
+body.fantasy-theme #choices-container button:hover {
+  background-color: #a0522d; /* Sienna */
+}
+body.fantasy-theme #story-controls button,
+body.fantasy-theme #toggle-full-story-btn {
+  background-color: #5c4033; /* Dark Brown */
+  color: #f0e6d2;
+  border-color: #daa520;
+}
+body.fantasy-theme #story-controls button:hover,
+body.fantasy-theme #toggle-full-story-btn:hover {
+  background-color: #7c5c48;
+}
+
+/* Sci-Fi Theme */
+
+body.sci-fi-theme {
+  background-color: rgba(3, 6, 12, 0.85);
+  background-size: cover;
+  background-position: center center;
+  background-attachment: fixed;
+}
+body.sci-fi-theme .container {
+  background: rgba(10, 20, 40, 0.85); /* Deep blue/black */
+  color: #e0e0e0; /* Light grey text */
+  border: 1px solid rgba(0, 255, 255, 0.3);
+}
+body.sci-fi-theme h1,
+body.sci-fi-theme h2,
+body.sci-fi-theme h3 {
+  color: #00ffff; /* Cyan */
+  text-shadow: 0 0 10px #00ffff;
+}
+body.sci-fi-theme #story-output {
+  background: rgba(20, 30, 50, 0.7);
+  border-color: rgba(0, 255, 255, 0.2);
+}
+body.sci-fi-theme #choices-container button {
+  background-color: #0d47a1; /* Darker blue */
+  border: 1px solid #00bfff; /* DeepSkyBlue border */
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
+}
+body.sci-fi-theme #choices-container button:hover {
+  background-color: #1565c0; /* Medium blue */
+}
+body.sci-fi-theme #story-controls button,
+body.sci-fi-theme #toggle-full-story-btn {
+  background-color: #1e3a5f;
+  color: #e0e0e0;
+  border-color: #00ffff;
+}
+body.sci-fi-theme #story-controls button:hover,
+body.sci-fi-theme #toggle-full-story-btn:hover {
+  background-color: #2a5285;
+  border-color: rgba(0, 255, 255, 0.2);
+}
+
+full-story-log.sci-fi-theme {
+  background-color: rgba(20, 30, 50, 0.7);
+}
+
+/* Adventure Theme */
+body.adventure-theme {
+  background-image: url("https://source.unsplash.com/1920x1080/?adventure,mountains,jungle,map");
+  background-size: cover;
+  background-position: center center;
+  background-attachment: fixed;
+}
+body.adventure-theme .container {
+  background: rgba(255, 250, 240, 0.9); /* FloralWhite, slightly transparent */
+  color: #3a2b20; /* Dark brown text */
+  border: 1px solid rgba(139, 69, 19, 0.4);
+}
+body.adventure-theme h1,
+body.adventure-theme h2,
+body.adventure-theme h3 {
+  color: #8b4513; /* SaddleBrown */
+}
+body.adventure-theme #story-output {
+  background: rgba(245, 245, 220, 0.8); /* Beige */
+  border-color: rgba(139, 69, 19, 0.3);
+}
+body.adventure-theme #choices-container button {
+  background-color: #d2691e; /* Chocolate */
+  border: 1px solid #8b4513;
+}
+body.adventure-theme #choices-container button:hover {
+  background-color: #cd853f; /* Peru */
+}
+body.adventure-theme #story-controls button,
+body.adventure-theme #toggle-full-story-btn {
+  background-color: #a0522d; /* Sienna */
+  color: white;
+  border-color: #8b4513;
+}
+body.adventure-theme #story-controls button:hover,
+body.adventure-theme #toggle-full-story-btn:hover {
+  background-color: #804020;
+}
+
+/* Mystery Theme */
+body.mystery-theme {
+  background-image: url("https://source.unsplash.com/1920x1080/?mystery,dark,alley,noir");
+  background-size: cover;
+  background-position: center center;
+  background-attachment: fixed;
+}
+body.mystery-theme .container {
+  background: rgba(25, 25, 30, 0.88); /* Very dark grey/blue */
+  color: #b0c4de; /* LightSteelBlue text */
+  border: 1px solid rgba(70, 130, 180, 0.3); /* SteelBlue border */
+}
+body.mystery-theme h1,
+body.mystery-theme h2,
+body.mystery-theme h3 {
+  color: #778899; /* LightSlateGray */
+}
+body.mystery-theme #story-output {
+  background: rgba(40, 40, 50, 0.75);
+  border-color: rgba(70, 130, 180, 0.2);
+}
+body.mystery-theme #choices-container button {
+  background-color: #4682b4; /* SteelBlue */
+  border: 1px solid #b0c4de;
+}
+body.mystery-theme #choices-container button:hover {
+  background-color: #5a9bdc;
+}
+body.mystery-theme #story-controls button,
+body.mystery-theme #toggle-full-story-btn {
+  background-color: #2f4f4f; /* DarkSlateGray */
+  color: #b0c4de;
+  border-color: #778899;
+}
+body.mystery-theme #story-controls button:hover,
+body.mystery-theme #toggle-full-story-btn:hover {
+  background-color: #3a5f5f;
+}
+
+/* Loading spinner (already defined, ensure it's styled if not inherited) */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

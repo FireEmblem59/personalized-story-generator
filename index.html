@@ -50,7 +50,7 @@
         <input
           type="text"
           id="protagonist-name"
-          placeholder="Protagonist Name (e.g., Elara)"
+          placeholder="Protagonist Name (e.g., Mayline)"
         />
         <input
           type="number"
@@ -119,8 +119,20 @@
           <p>Loading story...</p>
         </div>
         <div id="choices-container">
-          <!-- Choices will be dynamically added here -->
+          <!-- AI choices will be dynamically added here -->
         </div>
+
+        <div id="custom-choice-container" style="display: none">
+          <textarea
+            id="custom-choice-input"
+            placeholder="What do you do next?"
+          ></textarea>
+          <div class="custom-choice-actions">
+            <button id="submit-custom-choice-btn">Submit My Action</button>
+            <button id="cancel-custom-choice-btn" type="button">Cancel</button>
+          </div>
+        </div>
+
         <div id="story-controls">
           <button id="read-aloud-btn">Read Aloud</button>
           <button id="restart-btn">Start New Story</button>

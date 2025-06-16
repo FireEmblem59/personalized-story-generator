@@ -1,0 +1,105 @@
+/* src/library.css */
+
+/* --- Library Page Specific Layout --- */
+
+.library-controls {
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+.story-grid {
+  display: grid;
+  /* This creates a responsive grid. It will fit as many 300px columns as it can. */
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+#no-stories-message {
+  padding: 40px;
+  text-align: center;
+  font-size: 1.2em;
+  color: #6c757d;
+  background-color: #f8f9fa;
+  border: 2px dashed #dee2e6;
+  border-radius: 8px;
+  margin-top: 30px;
+}
+
+/* --- Story Card Styling --- */
+
+.story-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.story-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.story-card-title {
+  font-size: 1.4em;
+  margin: 0 0 10px 0;
+  color: #2c3e50;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.story-card-excerpt {
+  flex-grow: 1; /* This makes the excerpt take up available space */
+  margin: 0 0 15px 0;
+  font-size: 0.95em;
+  color: #495057;
+  line-height: 1.5;
+}
+
+.story-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.story-card-date {
+  font-size: 0.85em;
+  color: #6c757d;
+}
+
+.story-card-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.card-btn {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.card-btn.load-btn {
+  background-color: #007bff; /* Blue */
+}
+
+.card-btn.load-btn:hover {
+  background-color: #0056b3;
+}
+
+.card-btn.delete-btn {
+  background-color: #dc3545; /* Red */
+}
+
+.card-btn.delete-btn:hover {
+  background-color: #c82333;
+}

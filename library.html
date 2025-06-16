@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Story Library</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="library.css" />
+  </head>
+  <body id="story-body">
+    <div class="container">
+      <h1>My Story Library</h1>
+      <div class="library-controls">
+        <a href="index.html" class="button-style">← Back to Story Generator</a>
+      </div>
+
+      <div id="story-library-grid" class="story-grid">
+        <!-- Story cards will be dynamically inserted here -->
+      </div>
+
+      <div id="no-stories-message" style="display: none">
+        <p>You haven't saved any stories yet. Go create an adventure!</p>
+      </div>
+    </div>
+
+    <!-- Template for a single story card -->
+    <template id="story-card-template">
+      <div class="story-card">
+        <h3 class="story-card-title"></h3>
+        <p class="story-card-excerpt"></p>
+        <div class="story-card-footer">
+          <span class="story-card-date"></span>
+          <div class="story-card-actions">
+            <button class="card-btn load-btn">Load</button>
+            <button class="card-btn delete-btn">Delete</button>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <script type="module" src="src/storage.js"></script>
+    <script type="module" src="src/library.js"></script>
+  </body>
+</html>

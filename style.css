@@ -1,28 +1,25 @@
-/* --- General Body and Container (Keep existing or adapt) --- */
+/* --- General Body and Container --- */
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
   margin: 0;
-  padding: 0; /* Remove padding if body handles full background */
+  padding: 20px 0;
   color: #333;
   transition: background-image 0.5s ease-in-out,
     background-color 0.5s ease-in-out;
   background-color: #f4f4f4;
   min-height: 100vh;
-  display: flex; /* For centering container if needed */
-  align-items: center; /* For centering container */
-  justify-content: center; /* For centering container */
 }
 
 .container {
   width: 90%;
   max-width: 800px;
-  margin: 20px auto; /* Auto margins for horizontal centering */
-  background: rgba(255, 255, 255, 0.9);
+  margin: 20px auto;
+  background: rgba(255, 255, 255, 0.95);
   padding: 25px 30px;
   border-radius: 12px;
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
-  text-align: center; /* Center h1, h2 */
+  text-align: center;
 }
 
 h1 {
@@ -42,7 +39,7 @@ h3 {
   color: #34495e;
 }
 
-/* --- API Key and Setup Screen (Keep existing or adapt) --- */
+/* --- API Key Section --- */
 #api-key-section {
   margin-bottom: 30px;
   padding: 20px;
@@ -74,6 +71,7 @@ h3 {
   background-color: #0056b3;
 }
 
+/* --- Setup Screen General Styles --- */
 #setup-screen label {
   display: block;
   margin-bottom: 8px;
@@ -85,22 +83,115 @@ h3 {
 #setup-screen select,
 #setup-screen textarea {
   display: block;
-  width: calc(100% - 22px); /* Account for padding */
+  width: 100%; /* Use 100% with box-sizing */
   margin-bottom: 15px;
   padding: 12px;
   border: 1px solid #ced4da;
   border-radius: 6px;
   font-size: 1em;
-  box-sizing: border-box; /* Important for width calculation */
+  box-sizing: border-box;
 }
 #setup-screen textarea {
   height: 80px;
   resize: vertical;
 }
+
+/* --- Input with Randomizer --- */
+.input-with-randomizer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.input-with-randomizer input,
+.input-with-randomizer textarea {
+  flex-grow: 1;
+  margin-bottom: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.randomize-btn {
+  flex-shrink: 0;
+  height: 48px;
+  width: 48px;
+  padding: 0;
+  font-size: 1.5em;
+  background-color: #e9ecef;
+  border: 1px solid #ced4da;
+  border-left: none;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.randomize-btn:hover {
+  background-color: #ced4da;
+}
+.input-with-randomizer textarea + .randomize-btn {
+  align-self: flex-start;
+}
+
+/* --- Collapsible Sections with Animation --- */
+.collapsible-section {
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding: 0 15px;
+  text-align: left;
+}
+.collapsible-section summary {
+  cursor: pointer;
+  outline: none;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  user-select: none;
+  padding: 5px 0;
+}
+.collapsible-section summary h3 {
+  margin: 10px 0;
+  padding: 0;
+  border: none;
+  flex-grow: 1;
+  color: #34495e;
+}
+.collapsible-section summary::after {
+  content: "▶";
+  font-size: 0.8em;
+  transition: transform 0.2s ease-in-out;
+  margin-left: 10px;
+  color: #34495e;
+}
+.collapsible-section[open] > summary::after {
+  transform: rotate(90deg);
+}
+.collapsible-section summary::-webkit-details-marker {
+  display: none;
+}
+.collapsible-section .collapsible-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease-out;
+}
+.collapsible-section[open] .collapsible-content {
+  grid-template-rows: 1fr;
+  padding-bottom: 15px;
+}
+.collapsible-section .collapsible-content > div {
+  overflow: hidden;
+}
+.collapsible-section h4 {
+  font-size: 1.1em;
+  color: #495057;
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+
+/* --- Library & Start Buttons --- */
+#library-link-btn.button-style,
 #start-story-btn {
-  /* Specific styling for the main action button */
   display: inline-block;
-  background: #28a745; /* Green for go */
+  text-decoration: none;
   color: white;
   padding: 12px 25px;
   border: none;
@@ -111,6 +202,15 @@ h3 {
   transition: background-color 0.2s;
   margin-top: 15px;
 }
+#library-link-btn.button-style {
+  background: #007bff;
+}
+#library-link-btn.button-style:hover {
+  background: #0056b3;
+}
+#start-story-btn {
+  background: #28a745;
+}
 #start-story-btn:hover {
   background: #218838;
 }
@@ -119,72 +219,56 @@ h3 {
   cursor: not-allowed;
 }
 
-/* --- Story Screen Enhancements --- */
-#story-screen {
-  text-align: left; /* Align story text to the left */
-}
-
+/* --- Story Screen --- */
 #story-screen h2#story-title {
   text-align: center;
   border-bottom: 2px solid #eee;
   padding-bottom: 15px;
   margin-bottom: 25px;
 }
-
 #story-output {
   background: #f8f9fa;
   padding: 20px;
   border-radius: 8px;
   margin-bottom: 25px;
-  min-height: 150px; /* Ensure space for story */
+  min-height: 150px;
   border: 1px solid #e9ecef;
   font-size: 1.1em;
   line-height: 1.7;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
-
   display: flex;
   flex-direction: column;
-  align-items: center; /* centers horizontally */
-  justify-content: center; /* centers vertically inside min-height */
-  text-align: center; /* centers text content */
+  align-items: center;
+  justify-content: center;
 }
-
 #story-output p {
+  width: 100%;
+  text-align: left;
   margin-top: 0;
 }
-
-/* Loader within story output */
 #story-output .loader {
   border: 5px solid #f3f3f3;
-  border-top: 5px solid #007bff; /* Blue loader */
+  border-top: 5px solid #007bff;
   border-radius: 50%;
   width: 30px;
   height: 30px;
   animation: spin 1s linear infinite;
 }
-
-#story-output p:has(+ .loader) {
-  /* If text precedes loader */
+#story-output p:first-child:not(:last-child) {
   text-align: center;
-  color: #6c757d;
 }
 
+/* --- Choice Buttons --- */
 #choices-container {
   margin-bottom: 25px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 15px;
 }
-
-/* This centers the last button if it's an odd number (3rd, 5th, etc.)  */
 #choices-container button:last-child:nth-child(odd) {
   grid-column: 1 / -1;
-  margin: 0 auto;
-  width: 50%;
 }
-
 #choices-container button {
-  display: block;
   width: 100%;
   background: #007bff;
   color: white;
@@ -193,45 +277,80 @@ h3 {
   border-radius: 6px;
   cursor: pointer;
   font-size: 1.05em;
-  text-align: left;
+  text-align: center;
   transition: background-color 0.2s, transform 0.1s;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
-
 #choices-container button:hover {
   background: #0056b3;
   transform: translateY(-2px);
 }
-#choices-container button:active {
-  transform: translateY(0px);
+#choices-container button.custom-choice-trigger {
+  background-color: #495057 !important;
+  border: 1px dashed #fff;
+}
+#choices-container button.custom-choice-trigger:hover {
+  background-color: #343a40 !important;
 }
 
-/* If you want two choices side-by-side on larger screens: */
-@media (min-width: 600px) {
-  #choices-container {
-    grid-template-columns: repeat(
-      2,
-      minmax(250px, 1fr)
-    ); /* Responsive columns */
-  }
-  #choices-container button {
-    text-align: center; /* Center text if buttons are side-by-side */
-  }
+/* --- Custom Choice Input --- */
+#custom-choice-container {
+  margin-top: 15px;
+  padding: 15px;
+  background-color: #f0f8ff;
+  border-radius: 8px;
+  border: 1px solid #d4e8ff;
+}
+#custom-choice-container textarea {
+  width: 100%;
+  padding: 12px;
+  min-height: 60px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 1em;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  resize: none;
+}
+.custom-choice-actions {
+  display: flex;
+  gap: 10px;
+}
+#custom-choice-container button {
+  flex-grow: 1;
+  padding: 12px 20px;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+#submit-custom-choice-btn {
+  background-color: #28a745;
+}
+#submit-custom-choice-btn:hover {
+  background-color: #218838;
+}
+#cancel-custom-choice-btn {
+  background-color: #dc3545;
+}
+#cancel-custom-choice-btn:hover {
+  background-color: #c82333;
 }
 
+/* --- Story Controls & Log --- */
 #story-controls {
   margin-top: 20px;
   padding-top: 20px;
   border-top: 1px solid #e0e0e0;
   display: flex;
-  flex-wrap: wrap; /* Allow buttons to wrap on small screens */
-  gap: 10px; /* Space between control buttons */
-  justify-content: center; /* Center control buttons */
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
 }
-
 #story-controls button,
 #toggle-full-story-btn {
-  /* General styling for control buttons */
   padding: 10px 18px;
   border: 1px solid transparent;
   border-radius: 5px;
@@ -239,37 +358,32 @@ h3 {
   font-size: 0.95em;
   transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 }
-
 #read-aloud-btn {
-  background-color: #17a2b8; /* Teal */
+  background-color: #17a2b8;
   color: white;
 }
 #read-aloud-btn:hover {
   background-color: #138496;
 }
-
 #restart-btn {
-  background-color: #dc3545; /* Red */
+  background-color: #dc3545;
   color: white;
 }
 #restart-btn:hover {
   background-color: #c82333;
 }
-
 #share-story-btn {
-  background-color: #ffc107; /* Yellow */
+  background-color: #ffc107;
   color: #212529;
 }
 #share-story-btn:hover {
   background-color: #e0a800;
 }
-
 #toggle-full-story-btn {
-  background-color: #6c757d; /* Grey */
+  background-color: #6c757d;
   color: white;
-  margin-top: 15px; /* Give it some space if it's below other controls */
-  width: 100%; /* Make it full width for emphasis */
-  max-width: 300px; /* But not too wide */
+  margin-top: 15px;
+  max-width: 300px;
   margin-left: auto;
   margin-right: auto;
   display: block;
@@ -285,67 +399,12 @@ h3 {
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
 }
-
 #full-story-log h3 {
   text-align: center;
   margin-bottom: 15px;
   padding-bottom: 10px;
   border-bottom: 1px dashed #ced4da;
 }
-
-/* Container for the custom input elements */
-#custom-choice-container {
-  margin-top: 15px;
-  padding: 15px;
-  background-color: #f0f8ff; /* AliceBlue */
-  border-radius: 8px;
-  border: 1px solid #d4e8ff;
-}
-
-#custom-choice-container textarea {
-  width: calc(100% - 24px);
-  padding: 12px;
-  min-height: 60px;
-  border: 1px solid #ced4da;
-  border-radius: 6px;
-  font-size: 1em;
-  margin-bottom: 10px;
-  display: block;
-  resize: none;
-}
-
-.custom-choice-actions {
-  display: flex;
-  gap: 10px;
-}
-
-#custom-choice-container button {
-  flex-grow: 1;
-  padding: 12px 20px;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 1.1em;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-#submit-custom-choice-btn {
-  background-color: #28a745; /* Green */
-}
-
-#submit-custom-choice-btn:hover {
-  background-color: #218838; /* Darker green */
-}
-
-#cancel-custom-choice-btn {
-  background-color: #dc3545; /* Red */
-}
-
-#cancel-custom-choice-btn:hover {
-  background-color: #c82333; /* Darker red */
-}
-
 #full-story-content {
   max-height: 350px;
   overflow-y: auto;
@@ -354,105 +413,210 @@ h3 {
   line-height: 1.6;
   text-align: left;
 }
-#full-story-content p {
-  margin-bottom: 15px;
-  padding-bottom: 15px;
-  border-bottom: 1px dotted #ffffff;
+
+/* --- Modals and Alerts --- */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
 }
-#full-story-content p:last-child {
-  margin-bottom: 0;
-  padding-bottom: 0;
-  border-bottom: none;
+.modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  animation: modalOpen 0.3s ease-out;
 }
-#full-story-content hr {
-  display: none; /* Hiding the JS-inserted hr, using p border instead */
+@keyframes modalOpen {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.close-modal {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #aaa;
+}
+.close-modal:hover {
+  color: #333;
+}
+.share-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-top: 20px;
+}
+.share-option {
+  padding: 15px;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.share-option:hover {
+  background: #e9e9e9;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.share-option .icon {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+#share-link-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+#share-link-input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+#copy-link-btn {
+  padding: 10px 15px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+#copy-link-btn:hover {
+  background: #45a049;
 }
 
-/* --- Themed Backgrounds and Text Colors (Keep existing or adapt) --- */
+.alert {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 15px 25px;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 500;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  z-index: 2000;
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+.alert-success {
+  background-color: #28a745;
+}
+.alert-error {
+  background-color: #dc3545;
+}
+.alert-info {
+  background-color: #17a2b8;
+}
+
+/* --- Themed Backgrounds and Text Colors --- */
 /* Fantasy Theme */
 body.fantasy-theme {
   background-image: url("https://source.unsplash.com/1920x1080/?fantasy,enchanted,forest");
   background-size: cover;
   background-position: center center;
-  background-attachment: fixed; /* Keeps background static on scroll */
+  background-attachment: fixed;
 }
 body.fantasy-theme .container {
-  background: rgba(20, 10, 0, 0.8); /* Darker, earthy tone */
-  color: #f0e6d2; /* Parchment like text */
+  background: rgba(20, 10, 0, 0.85);
+  color: #f0e6d2;
   border: 1px solid rgba(240, 230, 210, 0.3);
 }
 body.fantasy-theme h1,
 body.fantasy-theme h2,
 body.fantasy-theme h3 {
-  color: #ffd700; /* Gold */
+  color: #ffd700;
 }
-body.fantasy-theme #story-output {
+body.fantasy-theme #story-output,
+body.fantasy-theme #full-story-log {
   background: rgba(40, 20, 10, 0.7);
   border-color: rgba(240, 230, 210, 0.2);
 }
 body.fantasy-theme #choices-container button {
-  background-color: #8b4513; /* SaddleBrown */
-  border: 1px solid #daa520; /* Goldenrod border */
+  background-color: #8b4513;
+  border: 1px solid #daa520;
 }
 body.fantasy-theme #choices-container button:hover {
-  background-color: #a0522d; /* Sienna */
+  background-color: #a0522d;
 }
-body.fantasy-theme #story-controls button,
-body.fantasy-theme #toggle-full-story-btn {
-  background-color: #5c4033; /* Dark Brown */
-  color: #f0e6d2;
-  border-color: #daa520;
+body.fantasy-theme #custom-choice-container {
+  background-color: rgba(40, 20, 10, 0.7);
+  border-color: rgba(240, 230, 210, 0.2);
 }
-body.fantasy-theme #story-controls button:hover,
-body.fantasy-theme #toggle-full-story-btn:hover {
-  background-color: #7c5c48;
+
+body.fantasy-theme #collapsible-section,
+body.fantasy-theme select,
+body.fantasy-theme select option {
+  background-color: rgba(25, 25, 30, 0.92);
+  color: #fff; /* optional: ensures text stays readable */
 }
 
 /* Sci-Fi Theme */
-
 body.sci-fi-theme {
-  background-color: rgba(3, 6, 12, 0.85);
+  background-image: url("https://source.unsplash.com/1920x1080/?sci-fi,space,stars");
+  background-color: #03060c;
   background-size: cover;
   background-position: center center;
   background-attachment: fixed;
 }
 body.sci-fi-theme .container {
-  background: rgba(10, 20, 40, 0.85); /* Deep blue/black */
-  color: #e0e0e0; /* Light grey text */
+  background: rgba(10, 20, 40, 0.9);
+  color: #e0e0e0;
   border: 1px solid rgba(0, 255, 255, 0.3);
 }
 body.sci-fi-theme h1,
 body.sci-fi-theme h2,
 body.sci-fi-theme h3 {
-  color: #00ffff; /* Cyan */
+  color: #00ffff;
   text-shadow: 0 0 10px #00ffff;
 }
-body.sci-fi-theme #story-output {
-  background: rgba(20, 30, 50, 0.7);
+body.sci-fi-theme #story-output,
+body.sci-fi-theme #full-story-log {
+  background: rgba(20, 30, 50, 0.8);
   border-color: rgba(0, 255, 255, 0.2);
 }
 body.sci-fi-theme #choices-container button {
-  background-color: #0d47a1; /* Darker blue */
-  border: 1px solid #00bfff; /* DeepSkyBlue border */
+  background-color: #0d47a1;
+  border: 1px solid #00bfff;
   box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
 }
 body.sci-fi-theme #choices-container button:hover {
-  background-color: #1565c0; /* Medium blue */
+  background-color: #1565c0;
 }
-body.sci-fi-theme #story-controls button,
-body.sci-fi-theme #toggle-full-story-btn {
-  background-color: #1e3a5f;
-  color: #e0e0e0;
-  border-color: #00ffff;
-}
-body.sci-fi-theme #story-controls button:hover,
-body.sci-fi-theme #toggle-full-story-btn:hover {
-  background-color: #2a5285;
+body.sci-fi-theme #custom-choice-container {
+  background-color: rgba(20, 30, 50, 0.8);
   border-color: rgba(0, 255, 255, 0.2);
 }
 
-full-story-log.sci-fi-theme {
-  background-color: rgba(20, 30, 50, 0.7);
+body.sci-fi-theme #collapsible-section,
+body.sci-fi-theme select,
+body.sci-fi-theme select option {
+  background-color: rgba(25, 25, 30, 0.92);
+  color: #fff; /* optional: ensures text stays readable */
 }
 
 /* Adventure Theme */
@@ -463,35 +627,37 @@ body.adventure-theme {
   background-attachment: fixed;
 }
 body.adventure-theme .container {
-  background: rgba(255, 250, 240, 0.9); /* FloralWhite, slightly transparent */
-  color: #3a2b20; /* Dark brown text */
+  background: rgba(255, 250, 240, 0.9);
+  color: #3a2b20;
   border: 1px solid rgba(139, 69, 19, 0.4);
 }
 body.adventure-theme h1,
 body.adventure-theme h2,
 body.adventure-theme h3 {
-  color: #8b4513; /* SaddleBrown */
+  color: #8b4513;
 }
-body.adventure-theme #story-output {
-  background: rgba(245, 245, 220, 0.8); /* Beige */
+body.adventure-theme #story-output,
+body.adventure-theme #full-story-log {
+  background: rgba(245, 245, 220, 0.8);
   border-color: rgba(139, 69, 19, 0.3);
 }
 body.adventure-theme #choices-container button {
-  background-color: #d2691e; /* Chocolate */
+  background-color: #d2691e;
   border: 1px solid #8b4513;
 }
 body.adventure-theme #choices-container button:hover {
-  background-color: #cd853f; /* Peru */
+  background-color: #cd853f;
 }
-body.adventure-theme #story-controls button,
-body.adventure-theme #toggle-full-story-btn {
-  background-color: #a0522d; /* Sienna */
-  color: white;
-  border-color: #8b4513;
+body.adventure-theme #custom-choice-container {
+  background-color: rgba(245, 245, 220, 0.8);
+  border-color: rgba(139, 69, 19, 0.3);
 }
-body.adventure-theme #story-controls button:hover,
-body.adventure-theme #toggle-full-story-btn:hover {
-  background-color: #804020;
+
+body.adventure-theme #collapsible-section,
+body.adventure-theme select,
+body.adventure-theme select option {
+  background-color: rgba(25, 25, 30, 0.92);
+  color: #fff; /* optional: ensures text stays readable */
 }
 
 /* Mystery Theme */
@@ -502,38 +668,40 @@ body.mystery-theme {
   background-attachment: fixed;
 }
 body.mystery-theme .container {
-  background: rgba(25, 25, 30, 0.88); /* Very dark grey/blue */
-  color: #b0c4de; /* LightSteelBlue text */
-  border: 1px solid rgba(70, 130, 180, 0.3); /* SteelBlue border */
+  background: rgba(25, 25, 30, 0.92);
+  color: #b0c4de;
+  border: 1px solid rgba(70, 130, 180, 0.3);
 }
 body.mystery-theme h1,
 body.mystery-theme h2,
 body.mystery-theme h3 {
-  color: #778899; /* LightSlateGray */
+  color: #778899;
 }
-body.mystery-theme #story-output {
-  background: rgba(40, 40, 50, 0.75);
+body.mystery-theme #story-output,
+body.mystery-theme #full-story-log {
+  background: rgba(40, 40, 50, 0.8);
   border-color: rgba(70, 130, 180, 0.2);
 }
 body.mystery-theme #choices-container button {
-  background-color: #4682b4; /* SteelBlue */
+  background-color: #4682b4;
   border: 1px solid #b0c4de;
 }
 body.mystery-theme #choices-container button:hover {
   background-color: #5a9bdc;
 }
-body.mystery-theme #story-controls button,
-body.mystery-theme #toggle-full-story-btn {
-  background-color: #2f4f4f; /* DarkSlateGray */
-  color: #b0c4de;
-  border-color: #778899;
-}
-body.mystery-theme #story-controls button:hover,
-body.mystery-theme #toggle-full-story-btn:hover {
-  background-color: #3a5f5f;
+body.mystery-theme #custom-choice-container {
+  background-color: rgba(40, 40, 50, 0.8);
+  border-color: rgba(70, 130, 180, 0.2);
 }
 
-/* Loading spinner (already defined, ensure it's styled if not inherited) */
+body.mystery-theme #collapsible-section,
+body.mystery-theme select,
+body.mystery-theme select option {
+  background-color: rgba(25, 25, 30, 0.92);
+  color: #fff; /* optional: ensures text stays readable */
+}
+
+/* --- Keyframes & Animations --- */
 @keyframes spin {
   0% {
     transform: rotate(0deg);

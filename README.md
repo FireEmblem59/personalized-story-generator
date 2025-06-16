@@ -2,6 +2,8 @@
 
 Welcome to the AI-Powered Personalized Story Generator! This web application allows users to create unique, customizable stories based on their input, utilizing the Google Gemini API to generate dynamic and coherent narratives.
 
+You can access here: [website](https://fireemblem59.github.io/personalized-story-generator/)
+
 <picture>
     <source srcset="image.png">
     <img

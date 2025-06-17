@@ -254,9 +254,6 @@ h3 {
   height: 30px;
   animation: spin 1s linear infinite;
 }
-#story-output p:first-child:not(:last-child) {
-  text-align: center;
-}
 
 /* --- Choice Buttons --- */
 #choices-container {
@@ -531,6 +528,43 @@ h3 {
 }
 .alert-info {
   background-color: #17a2b8;
+}
+
+/* --- Word Count Controls --- */
+#word-count-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+}
+#word-count-controls label {
+  font-weight: 500;
+  color: #495057;
+}
+#word-count-controls input[type="number"] {
+  width: 80px;
+  padding: 8px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 1em;
+
+  /* Remove default arrows and unify appearance across browsers */
+  appearance: textfield;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+}
+
+/* Hide the default spinner arrows (Chrome, Safari) */
+#word-count-controls input[type="number"]::-webkit-inner-spin-button,
+#word-count-controls input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 /* --- Themed Backgrounds and Text Colors --- */

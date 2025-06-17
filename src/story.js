@@ -8,7 +8,8 @@ const PROMPT_TEMPLATE = (
   choice = null,
   isFinal = false
 ) => {
-  const { language, words, numChoices, template, storyType } = config;
+  const { language, minWords, maxWords, numChoices, template, storyType } =
+    config;
   const { protagonist, setting, conflict, sidekick, antagonist } = details;
 
   let prompt = `You are a creative storyteller writing a ${template} ${storyType} in ${language}. `;
@@ -34,7 +35,7 @@ const PROMPT_TEMPLATE = (
   }
 
   // Generation instructions
-  prompt += `Generate the next story segment (${words} words). `;
+  prompt += `Generate the next story segment (between ${minWords} and ${maxWords} words). `;
 
   if (isFinal) {
     prompt += "Provide a conclusive ending. Do NOT include choices.";

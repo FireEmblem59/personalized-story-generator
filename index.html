@@ -101,7 +101,7 @@
         <label for="story-type">Story Length:</label>
         <select id="story-type">
           <option value="short-story">Short Story (approx. 5 turns)</option>
-          <option value="novel">Novel (up to 15 turns)</option>
+          <option value="novel">Novel (infinite turns)</option>
         </select>
 
         <label for="protagonist-name">Protagonist's Name:</label>
@@ -318,6 +318,27 @@
             <button id="cancel-custom-choice-btn" type="button">Cancel</button>
           </div>
         </div>
+
+        <div id="word-count-controls" style="display: none">
+          <label for="min-words-input">Word Count:</label>
+          <input
+            type="number"
+            id="min-words-input"
+            min="50"
+            max="800"
+            step="10"
+          />
+          <span>-</span>
+          <input
+            type="number"
+            id="max-words-input"
+            min="51"
+            max="801"
+            step="10"
+          />
+          <span>words</span>
+        </div>
+
         <div id="story-controls">
           <button id="read-aloud-btn">Read Aloud</button>
           <button id="restart-btn">Start New Story</button>

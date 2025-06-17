@@ -75,6 +75,9 @@ export function initUI() {
     toggleFullStoryBtn: document.getElementById("toggle-full-story-btn"),
     fullStoryLogDiv: document.getElementById("full-story-log"),
     fullStoryContentDiv: document.getElementById("full-story-content"),
+    wordCountControls: document.getElementById("word-count-controls"),
+    minWordsInput: document.getElementById("min-words-input"),
+    maxWordsInput: document.getElementById("max-words-input"),
 
     // Share Modal
     shareModal: document.getElementById("share-modal"),
@@ -335,18 +338,18 @@ async function startStoryHandler() {
 
   setLanguage(domElements.languageSelect.value);
 
+  const storyType = domElements.storyTypeSelect.value;
+
   // Gather story configuration
   updateStoryState({
     config: {
       language: domElements.languageSelect.value,
       template: domElements.storyTemplateSelect.value,
-      storyType: domElements.storyTypeSelect.value,
-      words:
-        domElements.storyTypeSelect.value === "short-story"
-          ? "100-150"
-          : "400-500",
+      storyType: storyType,
+      minWords: storyType === "short-story" ? 100 : 400,
+      maxWords: storyType === "short-story" ? 150 : 500,
       numChoices: 4,
-      maxTurns: domElements.storyTypeSelect.value === "novel" ? 15 : 5,
+      maxTurns: storyType === "novel" ? 999999999999999 : 5,
     },
     details: {
       protagonist: {
@@ -399,6 +402,11 @@ async function startStoryHandler() {
 function renderChoices(choices) {
   domElements.choicesContainerDiv.innerHTML = "";
 
+  domElements.wordCountControls.style.display = "flex";
+
+  domElements.minWordsInput.value = storyState.config.minWords;
+  domElements.maxWordsInput.value = storyState.config.maxWords;
+
   if (choices.length > 0) {
     choices.forEach((choice, index) => {
       const button = document.createElement("button");
@@ -417,17 +425,39 @@ function renderChoices(choices) {
     domElements.readAloudBtn.disabled = false;
   } else {
     domElements.storyOutputDiv.innerHTML += "<p><strong>THE END</strong></p>";
-    domElements.choicesContainerDiv.innerHTML = "<p>Thank you for playing!</p>";
+    domElements.choicesContainerDiv.innerHTML =
+      '<p style="display: block; text-align: center;">Thank you for playing!</p>';
     domElements.readAloudBtn.disabled = false;
+    domElements.wordCountControls.style.display = "none";
   }
 }
 
 async function handleChoice(choice) {
+  // Read and update word count from UI before generating
+
+  let newMinWords = parseInt(domElements.minWordsInput.value, 10);
+  let newMaxWords = parseInt(domElements.maxWordsInput.value, 10);
+
+  if (newMinWords > newMaxWords)
+    [newMinWords, newMaxWords] = [newMaxWords, newMinWords];
+
+  if (newMinWords && newMaxWords && newMinWords <= newMaxWords) {
+    // Persist the new word count for the next rounds of this story
+    updateStoryState({
+      config: {
+        ...storyState.config, // Keep existing config
+        minWords: newMinWords,
+        maxWords: newMaxWords,
+      },
+    });
+  }
+
   try {
     // Show loading state
     domElements.storyOutputDiv.innerHTML =
       '<div class="loader"></div><p>Continuing your story...</p>';
     domElements.choicesContainerDiv.innerHTML = "";
+    cancelCustomChoice();
 
     const { story, choices } = await continueStory(choice);
 
@@ -600,6 +630,7 @@ function restartStoryHandler() {
   domElements.setupScreen.style.display = "block";
   domElements.requiredInfoText.style.display = "block";
   domElements.storyScreen.style.display = "none";
+  domElements.wordCountControls.style.display = "none";
   domElements.storyOutputDiv.innerHTML = "<p>Loading story...</p>";
   domElements.choicesContainerDiv.innerHTML = "";
   domElements.customChoiceContainer.style.display = "none";

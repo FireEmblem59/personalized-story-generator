@@ -1,35 +1,34 @@
 # Personalized Story Generator (AI-Powered)
 
-Welcome to the AI-Powered Personalized Story Generator! This web application allows users to create unique, customizable stories based on their input, utilizing the Google Gemini API to generate dynamic and coherent narratives.
+Welcome to the AI-Powered Personalized Story Generator! This web application allows users to create unique, modular, and highly customizable stories. It uses the Google Gemini API to generate dynamic and coherent narratives that you can save, export, and share.
 
 You can access here: [website](https://fireemblem59.github.io/personalized-story-generator/)
 
 <picture>
-    <source srcset="image.png">
-    <img
-        alt="Momentum Firmware"
-        src="image.png">
+<source srcset="image.png">
+<img
+alt="A screenshot showing the story generator's user interface."
+src="image.png">
 </picture>
 
 ## Features
 
-- **Customizable Stories:** Define your protagonist, setting, conflict, and an optional sidekick and antagonist.
-- **Story Templates:** Choose from predefined templates like Adventure, Mystery, Fantasy, and Sci-Fi.
-- **Dynamic AI Generation:** Leverages the Google Gemini API (gemini-pro model) to craft story segments.
-- **Branching Narratives:** Make choices that influence the story's direction, leading to different paths and outcomes.
-- **Multiple Endings:** The story can conclude in various ways based on user decisions.
-- **Themed UI:** The application's background and accents change based on the selected story genre.
+- **Progressive Disclosure UI:** A clean, user-friendly interface with collapsible sections that keeps the screen uncluttered for new users while offering deep customization for advanced users.
+- **Inspiration Boosters:** "Randomizer" buttons for key creative fields (names, locations, conflicts) to help overcome writer's block.
+- **Dynamic Story Length:** Choose between a "Short Story" with a fixed length or a "Novel" with extended turns.
+- **Dynamic AI Generation:** Leverages the Google Gemini API (gemini-1.5-flash model) to craft story segments.
+- **User-Driven Narratives:** Make choices from AI-generated options or write your own custom action to steer the story.
+- **Complete Story Library:** Save your stories to your browser and access them from a dedicated, beautifully organized library page.
+- **Advanced Export Options:** Save your finished stories as .txt, .pdf, or even .epub files for e-readers.
+- **Themed UI:** The application's background and accents change based on the selected story genre (Fantasy, Sci-Fi, etc.).
 - **Text-to-Speech:** Listen to your generated story read aloud by the browser.
-- **Full Story Log:** Review the entire story as it unfolds.
-- **Story Sharing:** Option to copy the story to the clipboard for sharing.
-- **Replayability:** Easily start new stories with different parameters.
 
 ## Tech Stack
 
 - **Frontend:** HTML5, CSS3, Vanilla JavaScript (ES Modules)
 - **AI Integration:** Google Gemini API (via `@google/generative-ai` SDK)
+- **Export Libraries:** jsPDF, JSZip, and FileSaver.js
 - **Text-to-Speech:** Browser's built-in `SpeechSynthesis` API
-- **Styling:** Custom CSS with themed backgrounds.
 
 ## Setup and Usage
 
@@ -50,13 +49,7 @@ To run this project locally, you'll need a Google Gemini API Key.
   - If you downloaded the project as a ZIP file from GitHub, extract it to a folder on your computer.
   - Open your terminal or command prompt and navigate into this extracted folder.
 
-**3. Configure API Key:**
-
-- When you first open `index.html` in your browser (after starting a local server, see step 4), you will be prompted to enter your Gemini API Key.
-- Enter the key you obtained in step 1 into the input field provided at the top of the page.
-- Click the "Save Key" button. The key will be stored in your browser's `localStorage` for future sessions on that browser. If the key is valid and the AI initializes, you'll see a confirmation.
-
-**4. Run the Application via a Local Web Server:**
+**3. Run the Application via a Local Web Server:**
 
 This project uses ES Modules and makes API calls, which require it to be served via a web server (not by directly opening `index.html` with `file:///`).
 
@@ -77,40 +70,36 @@ This project uses ES Modules and makes API calls, which require it to be served 
   6.  The terminal will display a message like `Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...`.
   7.  Open your web browser and go to `http://localhost:8000`.
 
-- **Using Node.js (with `serve` package):**
-  1.  Ensure you have Node.js and npm installed.
-  2.  Open your terminal or command prompt.
-  3.  Navigate to the root directory of the project.
-  4.  If you haven't used `serve` before, install it globally: `npm install -g serve`
-  5.  Run the server: `serve .`
-  6.  The terminal will display one or more local addresses (e.g., `http://localhost:3000`).
-  7.  Open your web browser and go to one of these addresses.
+**4. Configure API Key:**
+
+- Once the application is running, you will be prompted to enter your Gemini API Key.
+- Paste your key and click "Save Key". It will be stored in your browser's localStorage for future sessions.
 
 **5. Create Your Story:**
 
-- Once the application is running in your browser and you have saved your API key:
-- Fill in the details for your protagonist (name, age, occupation).
-- Define the setting (time period, location).
-- Describe the central conflict.
-- Optionally, add a sidekick and/or an antagonist with their traits.
-- Choose a story template/genre from the dropdown menu.
-- Click the "Start My Story!" button.
-- The first part of your story will be generated. Interact with the story by clicking on the choice buttons presented to continue the narrative.
-- Use the "Read Aloud," "Share Story," and "Show/Hide Full Story" buttons as needed.
-- Click "Start New Story" to reset and create a different adventure.
+- Use the main input fields to set up your story. Click the 🎲 buttons for inspiration!.
+- Expand the collapsible sections to add more detail.
+- Click "Start My Story!" and interact with the choices to continue the narrative.
+- Use the control buttons to read aloud, restart, or share/export your story.
+- Visit the "Story Library" to view, load, or delete your saved creations.
 
 ## How It Works
 
 The application constructs prompts based on user inputs (protagonist, setting, conflict, template, etc.) and the current story state (previous story parts and choices made). These prompts are sent to the Google Gemini API. The API processes the prompt and returns a new story segment, typically ending with two distinct choices for the protagonist. The user's selected choice is then used to build the context for the next API call, allowing the narrative to branch and evolve dynamically.
 
-## Future Enhancements (Potential Ideas tho I'm a bit lazy to do some of them and some are really easy to implement)
+## Future Enhancements
 
-- Integration with an image generation AI (e.g., DALL-E, Stable Diffusion via API) to create visuals for scenes or characters.
+This list tracks the project's direction and features that are planned or in progress
+
+- ~~Refactor code into a modular structure (UI, API, State, etc.).~~
+- ~~Create a clean UI with collapsible sections for advanced options~~
+- ~~Implement a "Story Library" to view and manage saved stories.~~
+- ~~Add randomizer buttons for key inputs to spark creativity.~~
+- Implement AI-generated images for scenes or characters.
 - A backend system for saving and loading stories, allowing users to resume or share persistent story links.
-- More sophisticated prompt engineering techniques for even richer, more nuanced, and longer narratives.
 - User accounts and a public or private gallery for users to save and share their favorite generated stories.
 - More advanced character customization options, perhaps with AI-generated personality descriptions based on traits.
-- Support for more than two choices at decision points.
+- ~~Support for more than two choices at decision points.~~
 
 ## Contributing
 

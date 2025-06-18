@@ -8,6 +8,8 @@ import {
   deleteStory,
 } from "./storage.js";
 
+import { exportToTxt, exportToPdf, exportToEpub } from "./export.js";
+
 // --- STATE MANAGEMENT ---
 let stories = [];
 let currentStoryId = null;
@@ -66,8 +68,9 @@ function init() {
   dom.editorChapterTitle = document.getElementById("editor-chapter-title");
   dom.saveChapterBtn = document.getElementById("save-chapter-btn");
   dom.editor = document.getElementById("editor");
-
   dom.wordCountDisplay = document.getElementById("word-count-display");
+
+  // AI Guidance Modal
   dom.aiGuidanceModal = document.getElementById("ai-guidance-modal");
   dom.closeGuidanceModalBtn = document.getElementById("close-guidance-modal");
   dom.guidanceInput = document.getElementById("ai-guidance-input");
@@ -76,6 +79,15 @@ function init() {
   dom.generateContinuationBtn = document.getElementById(
     "generate-continuation-btn"
   );
+
+  // --- NEW --- Share Modal Elements
+  dom.shareStoryModal = document.getElementById("share-story-modal");
+  dom.closeShareModalBtn = document.getElementById("close-share-modal");
+  dom.shareStoryBtn = document.getElementById("share-story-btn-cv");
+  dom.exportTxtBtn = document.getElementById("export-txt-btn-cv");
+  dom.exportPdfBtn = document.getElementById("export-pdf-btn-cv");
+  dom.exportEpubBtn = document.getElementById("export-epub-btn-cv");
+  dom.copyStoryBtn = document.getElementById("copy-story-btn-cv");
 
   // AI Toolbar
   dom.aiRewriteBtn = document.getElementById("ai-rewrite-btn");
@@ -188,19 +200,28 @@ function registerEventListeners() {
 
   // AI Buttons & Modal
   dom.aiRewriteBtn.addEventListener("click", handleAiRewrite);
-  dom.aiContinueBtn.addEventListener("click", showGuidanceModal); // Opens modal
+  dom.aiContinueBtn.addEventListener("click", showGuidanceModal);
   dom.aiTitleBtn.addEventListener("click", handleAiTitle);
   dom.aiNextChapterBtn.addEventListener("click", handleAiNextChapter);
   dom.closeGuidanceModalBtn.addEventListener("click", hideGuidanceModal);
   dom.generateContinuationBtn.addEventListener(
     "click",
     handleGenerateContinuation
-  ); // Runs AI
-
-  // Close modal if clicking outside of it
+  );
   dom.aiGuidanceModal.addEventListener("click", (e) => {
     if (e.target === dom.aiGuidanceModal) hideGuidanceModal();
   });
+
+  // Share Modal Listeners
+  dom.shareStoryBtn.addEventListener("click", showShareModal);
+  dom.closeShareModalBtn.addEventListener("click", hideShareModal);
+  dom.shareStoryModal.addEventListener("click", (e) => {
+    if (e.target === dom.shareStoryModal) hideShareModal();
+  });
+  dom.exportTxtBtn.addEventListener("click", handleExportTxt);
+  dom.exportPdfBtn.addEventListener("click", handleExportPdf);
+  dom.exportEpubBtn.addEventListener("click", handleExportEpub);
+  dom.copyStoryBtn.addEventListener("click", handleCopyStory);
 }
 
 function handleSaveApiKey() {
@@ -225,6 +246,76 @@ function loadStoryFromURL() {
     }
     window.history.replaceState({}, document.title, window.location.pathname);
   }
+}
+
+// Share and Export Handlers
+
+function showShareModal() {
+  if (!currentStoryId) {
+    showAlert("Please select a story to share.", "info");
+    return;
+  }
+  dom.shareStoryModal.style.display = "block";
+}
+
+function hideShareModal() {
+  dom.shareStoryModal.style.display = "none";
+}
+
+function handleExportTxt() {
+  const story = stories.find((s) => s.id === currentStoryId);
+  exportToTxt(story);
+  hideShareModal();
+}
+
+function handleExportPdf() {
+  const story = stories.find((s) => s.id === currentStoryId);
+  exportToPdf(story);
+  hideShareModal();
+}
+
+function handleExportEpub() {
+  const story = stories.find((s) => s.id === currentStoryId);
+  exportToEpub(story);
+  hideShareModal();
+}
+
+function handleCopyStory() {
+  const story = stories.find((s) => s.id === currentStoryId);
+  if (!story) return;
+
+  // Use the same formatter as the other exports
+  const content = formatStoryContent(story);
+
+  navigator.clipboard
+    .writeText(content)
+    .then(() => {
+      showAlert("Story copied to clipboard!", "success");
+      hideShareModal();
+    })
+    .catch((err) => {
+      showAlert("Failed to copy text.", "error");
+    });
+}
+
+function formatStoryContent(storyObject) {
+  const storyData = storyObject;
+  const title = storyData.title || `A Story`;
+  const details = storyData.details || {};
+  const chapters = storyData.chapters || [];
+
+  let content = `✨ ${title} ✨\n\n`;
+  if (details.protagonist?.name) {
+    content += `--- STORY DETAILS ---\n`;
+    content += `Protagonist: ${details.protagonist.name}\n`;
+    content += `Setting: ${details.setting?.location || "Unknown"}\n\n`;
+  }
+  content += `--- STORY CONTENT ---\n\n`;
+  chapters.forEach((chapter) => {
+    content += `--- ${chapter.title} ---\n\n`;
+    content += `${chapter.content}\n\n`;
+  });
+  return content;
 }
 
 // --- STORY & CHAPTER LOGIC ---

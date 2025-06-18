@@ -6,26 +6,71 @@
     <title>Chapter Editor</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="chapter-view.css" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   </head>
   <body>
+    <!-- AI Guidance Modal -->
     <div id="ai-guidance-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" id="close-guidance-modal">×</span>
-            <h3>Guide the AI</h3>
-            
-            <label for="ai-guidance-input">What should happen next? (Optional)</label>
-            <textarea id="ai-guidance-input" placeholder="e.g., A mysterious stranger arrives and offers a warning..."></textarea>
-            
-            <label>Word Count Range:</label>
-            <div class="word-count-modal-controls">
-                <input type="number" id="ai-min-words" value="150" min="50" step="10">
-                <span>to</span>
-                <input type="number" id="ai-max-words" value="250" min="50" step="10">
-                <span>words</span>
-            </div>
-            
-            <button id="generate-continuation-btn" class="button-style">Generate</button>
+      <div class="modal-content">
+        <span class="close-modal" id="close-guidance-modal">×</span>
+        <h3>Guide the AI</h3>
+
+        <label for="ai-guidance-input"
+          >What should happen next? (Optional)</label
+        >
+        <textarea
+          id="ai-guidance-input"
+          placeholder="e.g., A mysterious stranger arrives and offers a warning..."
+        ></textarea>
+
+        <label>Word Count Range:</label>
+        <div class="word-count-modal-controls">
+          <input
+            type="number"
+            id="ai-min-words"
+            value="150"
+            min="50"
+            step="10"
+          />
+          <span>to</span>
+          <input
+            type="number"
+            id="ai-max-words"
+            value="250"
+            min="50"
+            step="10"
+          />
+          <span>words</span>
         </div>
+
+        <button id="generate-continuation-btn" class="button-style">
+          Generate
+        </button>
+      </div>
+    </div>
+
+    <div id="share-story-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" id="close-share-modal">×</span>
+        <h3>Share Your Story</h3>
+        <div class="share-options">
+          <button class="share-option" id="export-txt-btn-cv">
+            <span class="icon">📄</span> Export as TXT
+          </button>
+          <button class="share-option" id="export-pdf-btn-cv">
+            <span class="icon">📊</span> Export as PDF
+          </button>
+          <button class="share-option" id="export-epub-btn-cv">
+            <span class="icon">📚</span> Export as EPUB
+          </button>
+          <button class="share-option" id="copy-story-btn-cv">
+            <span class="icon">📋</span> Copy to Clipboard
+          </button>
+        </div>
+      </div>
     </div>
 
     <div class="chapter-view-container">
@@ -37,20 +82,24 @@
         </div>
 
         <div id="api-key-section-cv">
-            <input type="password" id="apiKey-cv" placeholder="Enter Gemini API Key to enable AI"/>
-            <button id="saveApiKey-cv">Save</button>
+          <input
+            type="password"
+            id="apiKey-cv"
+            placeholder="Enter Gemini API Key to enable AI"
+          />
+          <button id="saveApiKey-cv">Save</button>
         </div>
-        
-        <div class="story-language-controls" style="display: none;">
-            <label for="story-language-select">Story Language:</label>
-            <select id="story-language-select">
-                <option value="English">English</option>
-                <option value="French">French</option>
-                <option value="Spanish">Spanish</option>
-                <option value="German">German</option>
-                <option value="Italian">Italian</option>
-                <option value="Japanese">Japanese</option>
-            </select>
+
+        <div class="story-language-controls" style="display: none">
+          <label for="story-language-select">Story Language:</label>
+          <select id="story-language-select">
+            <option value="English">English</option>
+            <option value="French">French</option>
+            <option value="Spanish">Spanish</option>
+            <option value="German">German</option>
+            <option value="Italian">Italian</option>
+            <option value="Japanese">Japanese</option>
+          </select>
         </div>
 
         <div class="story-selection-controls">
@@ -66,44 +115,51 @@
 
         <div class="chapter-list-container">
           <h3 id="chapter-list-title">Chapters</h3>
-          <ul id="chapter-list">
-          </ul>
+          <ul id="chapter-list"></ul>
           <div class="chapter-buttons">
-             <button id="generate-first-chapter-btn">🤖 Generate First Chapter</button>
-             <button id="add-chapter-btn">Add Chapter</button>
+            <button id="generate-first-chapter-btn">
+              🤖 Generate First Chapter
+            </button>
+            <button id="add-chapter-btn">Add Chapter</button>
           </div>
         </div>
       </aside>
 
       <!-- Right Panel: Editor -->
-      <main class="main-panel" id="main-editor-panel" style="display: none;">
+      <main class="main-panel" id="main-editor-panel" style="display: none">
         <div class="editor-header">
-            <h2 id="editor-chapter-title"></h2>
-            <div class="editor-actions">
-                 <span id="word-count-display">0 words</span>
-                 <button id="save-chapter-btn">Save Chapter</button>
-            </div>
+          <h2 id="editor-chapter-title"></h2>
+          <div class="editor-actions">
+            <span id="word-count-display">0 words</span>
+            <button id="save-chapter-btn">Save Chapter</button>
+            <button id="share-story-btn-cv">Share Story</button>
+          </div>
         </div>
 
         <div class="ai-toolbar">
-            <button id="ai-rewrite-btn">Rewrite Selection</button>
-            <button id="ai-continue-btn">Continue Writing</button>
-            <button id="ai-title-btn">Suggest Title</button>
-            <button id="ai-next-chapter-btn">Start Next Chapter</button>
+          <button id="ai-rewrite-btn">Rewrite Selection</button>
+          <button id="ai-continue-btn">Continue Writing</button>
+          <button id="ai-title-btn">Suggest Title</button>
+          <button id="ai-next-chapter-btn">Start Next Chapter</button>
         </div>
-        
-        <div id="editor" contenteditable="true" aria-label="Chapter Content"></div>
+
+        <div
+          id="editor"
+          contenteditable="true"
+          aria-label="Chapter Content"
+        ></div>
       </main>
 
       <div id="welcome-panel">
-          <h3>Welcome to the Chapter Editor</h3>
-          <p>Select a story from the dropdown, or create a new one to begin.</p>
+        <h3>Welcome to the Chapter Editor</h3>
+        <p>Select a story from the dropdown, or create a new one to begin.</p>
       </div>
     </div>
 
     <!-- Scripts -->
     <script type="module" src="src/api.js"></script>
-    <script type="module" src/storage.js"></script>
+    <script type="module" src="src/storage.js"></script>
+    <script type="module" src="src/export.js"></script>
     <script type="module" src="src/chapter-view.js"></script>
   </body>
 </html>

@@ -1,0 +1,74 @@
+/* main.css */
+
+body {
+  background-color: #eef2f9;
+}
+
+.main-header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #dce1eb;
+}
+
+.main-header h1 {
+  font-size: 3em;
+  color: #1c3d5a;
+}
+
+.subtitle {
+  font-size: 1.2em;
+  color: #5a7b9c;
+  margin-top: -15px;
+}
+
+.nav-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 25px;
+  margin-top: 20px;
+}
+
+@media (min-width: 768px) {
+  .nav-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .nav-grid a:first-child {
+    grid-column: 1 / -1; /* Make the first item span full width */
+  }
+}
+
+.nav-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 30px;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  border: 1px solid #e0e7ee;
+}
+
+.nav-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 25px rgba(28, 61, 90, 0.12);
+}
+
+.nav-card-icon {
+  font-size: 3.5em;
+  line-height: 1;
+  margin-bottom: 15px;
+}
+
+.nav-card-title {
+  font-size: 1.6em;
+  color: #0056b3;
+  margin: 0 0 10px 0;
+}
+
+.nav-card-description {
+  font-size: 1em;
+  color: #495057;
+  line-height: 1.5;
+}

@@ -5,7 +5,7 @@ import { storyState, updateStoryState, resetStoryState } from "./state.js";
 import {
   saveApiKey,
   getApiKey,
-  saveStory,
+  saveStoryFromGenerator,
   loadStory,
   getStories,
 } from "./storage.js";
@@ -82,7 +82,6 @@ export function initUI() {
     // Share Modal
     shareModal: document.getElementById("share-modal"),
     closeModal: document.querySelector(".close-modal"),
-    saveStoryBtn: document.getElementById("save-story-btn"),
     exportTxtBtn: document.getElementById("export-txt-btn"),
     exportPdfBtn: document.getElementById("export-pdf-btn"),
     exportEpubBtn: document.getElementById("export-epub-btn"),
@@ -91,13 +90,8 @@ export function initUI() {
     shareLinkContainer: document.getElementById("share-link-container"),
     shareLinkInput: document.getElementById("share-link-input"),
     copyLinkBtn: document.getElementById("copy-link-btn"),
-
-    // Save/Load
-    loadStoryBtn: document.getElementById("load-story-btn"),
-    savedStoriesSelect: document.getElementById("saved-stories-select"),
   };
 
-  loadSavedStories();
   registerEventListeners();
 
   // Load API key if exists
@@ -116,45 +110,14 @@ export function initUI() {
     }
   }
 
-  // Load story from URL if present
-  const storyWasLoaded = loadStoryFromUrl();
+  // NOTE: Loading a story from URL into this view is disabled in favor of the Chapter Editor.
+  // The 'loadStoryFromUrl' function has been removed as it creates conflicting user experiences.
+  // Users will now be directed to the more powerful chapter-view.html for loading stories.
 
-  if (!storyWasLoaded) {
-    domElements.storyScreen.style.display = "none";
-  }
-
+  domElements.storyScreen.style.display = "none";
   if (domElements.fullStoryLogDiv)
     domElements.fullStoryLogDiv.style.display = "none";
   if (domElements.shareModal) domElements.shareModal.style.display = "none";
-
-  if (
-    domElements.savedStoriesSelect &&
-    domElements.savedStoriesSelect.options.length <= 1
-  ) {
-    domElements.savedStoriesSelect.style.display = "none";
-  }
-
-  // Hide story screen initially
-  if (domElements.storyScreen.style.display !== "block") {
-    domElements.storyScreen.style.display = "none";
-  }
-}
-
-function loadSavedStories() {
-  const stories = getStories();
-
-  // Only proceed if the select element exists
-  if (domElements.savedStoriesSelect) {
-    domElements.savedStoriesSelect.innerHTML =
-      '<option value="">Select a story to load</option>';
-
-    stories.forEach((story) => {
-      const option = document.createElement("option");
-      option.value = story.id;
-      option.textContent = story.title;
-      domElements.savedStoriesSelect.appendChild(option);
-    });
-  }
 }
 
 function registerEventListeners() {
@@ -197,18 +160,6 @@ function registerEventListeners() {
     domElements.toggleFullStoryBtn.addEventListener("click", toggleFullStory);
   }
 
-  // Save/Load Stories
-  if (domElements.loadStoryBtn) {
-    domElements.loadStoryBtn.addEventListener("click", showLoadStoryOptions);
-  }
-
-  if (domElements.savedStoriesSelect) {
-    domElements.savedStoriesSelect.addEventListener(
-      "change",
-      loadSelectedStory
-    );
-  }
-
   // Share Modal
   if (domElements.shareStoryBtn) {
     domElements.shareStoryBtn.addEventListener("click", showShareModal);
@@ -225,10 +176,6 @@ function registerEventListeners() {
   });
 
   // Share Options
-  if (domElements.saveStoryBtn) {
-    domElements.saveStoryBtn.addEventListener("click", handleSaveStory);
-  }
-
   if (domElements.exportTxtBtn) {
     domElements.exportTxtBtn.addEventListener("click", () => {
       exportToTxt();
@@ -264,26 +211,16 @@ function registerEventListeners() {
 
   if (domElements.setupScreen) {
     domElements.setupScreen.addEventListener("click", (e) => {
-      // Find the button that was clicked, if any
       const button = e.target.closest(".randomize-btn");
+      if (!button) return;
 
-      // If the click wasn't on a randomize button, do nothing
-      if (!button) {
-        return;
-      }
-
-      // Get the target input's ID from the button's data-target attribute
       const targetId = button.dataset.target;
       const inputElement = document.getElementById(targetId);
-
-      // The target key in our inspiration object might be different (e.g., 'conflict' instead of 'conflict-description')
-      // This is a simple way to map them. You can make this more robust if needed.
       const inspirationKey = targetId.includes("conflict")
         ? "conflict"
         : targetId;
 
       if (inputElement && inspiration[inspirationKey]) {
-        // Get a random item and set the input's value
         inputElement.value = getRandomItem(inspiration[inspirationKey]);
       }
     });
@@ -302,6 +239,7 @@ function handleSaveApiKey() {
       saveApiKey(apiKey);
       domElements.startStoryBtn.disabled = false;
       showAlert("API Key saved successfully!", "success");
+      domElements.ApiKeySection.style.display = "none";
     }
   } catch (error) {
     showAlert(`API Error: ${error.message}`, "error");
@@ -310,8 +248,6 @@ function handleSaveApiKey() {
 
 function validateSetup() {
   let isValid = true;
-
-  // Required fields
   const requiredFields = [
     domElements.protagonistNameInput,
     domElements.settingLocationInput,
@@ -320,10 +256,10 @@ function validateSetup() {
 
   requiredFields.forEach((field) => {
     if (!field.value.trim()) {
-      field.classList.add("invalid");
+      field.style.borderColor = "red";
       isValid = false;
     } else {
-      field.classList.remove("invalid");
+      field.style.borderColor = "";
     }
   });
 
@@ -332,15 +268,16 @@ function validateSetup() {
 
 async function startStoryHandler() {
   if (!validateSetup()) {
-    showAlert("Please fill in all required fields", "error");
+    showAlert(
+      "Please fill in all required fields (marked with red border)",
+      "error"
+    );
     return;
   }
 
-  setLanguage(domElements.languageSelect.value);
+  resetStoryState();
 
   const storyType = domElements.storyTypeSelect.value;
-
-  // Gather story configuration
   updateStoryState({
     config: {
       language: domElements.languageSelect.value,
@@ -379,31 +316,24 @@ async function startStoryHandler() {
     },
   });
 
-  // Show loading state
   domElements.storyOutputDiv.innerHTML =
     '<div class="loader"></div><p>Creating your story...</p>';
-
   try {
     const { story, choices } = await startNewStory();
-
-    // Update UI
     domElements.setupScreen.style.display = "none";
     domElements.requiredInfoText.style.display = "none";
     domElements.storyScreen.style.display = "block";
     applyTheme(storyState.config.template);
-
-    // Call display function here
     displayStoryPart(story, choices);
   } catch (error) {
     showAlert(`Story creation failed: ${error.message}`, "error");
+    restartStoryHandler();
   }
 }
 
 function renderChoices(choices) {
   domElements.choicesContainerDiv.innerHTML = "";
-
   domElements.wordCountControls.style.display = "flex";
-
   domElements.minWordsInput.value = storyState.config.minWords;
   domElements.maxWordsInput.value = storyState.config.maxWords;
 
@@ -415,13 +345,11 @@ function renderChoices(choices) {
       domElements.choicesContainerDiv.appendChild(button);
     });
 
-    // Add custom choice option
     const customBtn = document.createElement("button");
     customBtn.textContent = "✍️ Write my own action...";
-    customBtn.classList.add("custom-choice");
+    customBtn.classList.add("custom-choice-trigger");
     customBtn.addEventListener("click", showCustomChoiceInput);
     domElements.choicesContainerDiv.appendChild(customBtn);
-
     domElements.readAloudBtn.disabled = false;
   } else {
     domElements.storyOutputDiv.innerHTML += "<p><strong>THE END</strong></p>";
@@ -433,19 +361,15 @@ function renderChoices(choices) {
 }
 
 async function handleChoice(choice) {
-  // Read and update word count from UI before generating
-
   let newMinWords = parseInt(domElements.minWordsInput.value, 10);
   let newMaxWords = parseInt(domElements.maxWordsInput.value, 10);
-
   if (newMinWords > newMaxWords)
     [newMinWords, newMaxWords] = [newMaxWords, newMinWords];
 
   if (newMinWords && newMaxWords && newMinWords <= newMaxWords) {
-    // Persist the new word count for the next rounds of this story
     updateStoryState({
       config: {
-        ...storyState.config, // Keep existing config
+        ...storyState.config,
         minWords: newMinWords,
         maxWords: newMaxWords,
       },
@@ -453,106 +377,30 @@ async function handleChoice(choice) {
   }
 
   try {
-    // Show loading state
     domElements.storyOutputDiv.innerHTML =
       '<div class="loader"></div><p>Continuing your story...</p>';
     domElements.choicesContainerDiv.innerHTML = "";
     cancelCustomChoice();
-
     const { story, choices } = await continueStory(choice);
-
-    // Call display function here
     displayStoryPart(story, choices);
   } catch (error) {
     showAlert(`Error continuing story: ${error.message}`, "error");
   }
 }
 
-// The display function implementation
 export function displayStoryPart(storyText, choices = []) {
-  // Display story text
   domElements.storyOutputDiv.innerHTML = `<p>${storyText.replace(
     /\n/g,
     "<br>"
   )}</p>`;
-
-  // Add to history
   updateStoryState({
     history: [...storyState.history, storyText],
     currentChoices: choices,
   });
 
-  // Show choices
+  saveStoryFromGenerator(); // Auto-save after each part
   renderChoices(choices);
-
-  // Update full story log
   updateFullStoryLog();
-}
-
-/**
- * This is used when loading a story from the library or a URL.
- * @param {object} loadedStoryState - The complete story state object.
- */
-
-function renderLoadedStory(loadedStoryState) {
-  // 1. Update the UI screens and theme
-  domElements.setupScreen.style.display = "none";
-  domElements.requiredInfoText.style.display = "none";
-  domElements.storyScreen.style.display = "block";
-  applyTheme(loadedStoryState.config.template);
-
-  // --- THIS IS THE CRITICAL FIX ---
-  // 2. Combine the ENTIRE story history into one block of text.
-  const fullStoryText = loadedStoryState.history
-    .map((part) => `<p>${part.replace(/\n/g, "<br>")}</p>`)
-    .join(""); // Join all parts into one HTML string
-
-  // 3. Display the FULL story in the main output div.
-  domElements.storyOutputDiv.innerHTML = fullStoryText;
-  domElements.storyOutputDiv.style.textAlign = "left";
-
-  // 4. Render the choices that were available at the end of the loaded story.
-  renderChoices(loadedStoryState.currentChoices);
-
-  // 5. We no longer need the separate "Full Story Log" for this view,
-  //    as the main output now contains everything. We can hide it.
-  domElements.fullStoryLogDiv.style.display = "none";
-  domElements.toggleFullStoryBtn.textContent = "Show Full Story";
-}
-
-/**
- * Checks the URL for a 'story' parameter and loads it if found.
- * @returns {boolean} - True if a story was loaded, otherwise false.
- */
-function loadStoryFromUrl() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const storyId = urlParams.get("story");
-
-  if (storyId) {
-    try {
-      // 1. Get the story data from storage
-      const storyToLoad = loadStory(storyId);
-
-      // 2. Update the application's central state
-      updateStoryState(storyToLoad);
-
-      // 3. Render the entire loaded story
-      renderLoadedStory(storyState);
-
-      showAlert("Story loaded successfully from link!", "success");
-
-      // 4. Clean the URL
-      window.history.replaceState({}, document.title, window.location.pathname);
-      return true; // Indicate that a story was loaded
-    } catch (error) {
-      console.error("Failed to load story from URL:", error);
-      showAlert(
-        `Error: Could not load the story. It may have been deleted.`,
-        "error"
-      );
-    }
-  }
-  return false; // No story ID found in URL
 }
 
 function showCustomChoiceInput() {
@@ -563,11 +411,8 @@ function showCustomChoiceInput() {
 
 function submitCustomChoice() {
   const choice = domElements.customChoiceInput.value.trim();
-  if (choice) {
-    handleChoice(choice);
-  } else {
-    showAlert("Please enter your action", "error");
-  }
+  if (choice) handleChoice(choice);
+  else showAlert("Please enter your action", "error");
 }
 
 function cancelCustomChoice() {
@@ -581,13 +426,8 @@ function readAloudHandler() {
     showAlert("Your browser doesn't support text-to-speech", "error");
     return;
   }
-
   const storyP = domElements.storyOutputDiv.querySelector("p");
-  if (!storyP || storyState.history.length === 0) {
-    showAlert("No story content to read aloud", "error");
-    return;
-  }
-
+  if (!storyP || storyState.history.length === 0) return;
   const textToSpeak = storyP.innerText;
   const utterance = new SpeechSynthesisUtterance(textToSpeak);
   window.speechSynthesis.cancel();
@@ -595,13 +435,11 @@ function readAloudHandler() {
 }
 
 function toggleFullStory() {
-  if (domElements.fullStoryLogDiv.style.display === "none") {
-    domElements.fullStoryLogDiv.style.display = "block";
-    domElements.toggleFullStoryBtn.textContent = "Hide Full Story";
-  } else {
-    domElements.fullStoryLogDiv.style.display = "none";
-    domElements.toggleFullStoryBtn.textContent = "Show Full Story";
-  }
+  const isHidden = domElements.fullStoryLogDiv.style.display === "none";
+  domElements.fullStoryLogDiv.style.display = isHidden ? "block" : "none";
+  domElements.toggleFullStoryBtn.textContent = isHidden
+    ? "Hide Full Story"
+    : "Show Full Story";
 }
 
 function updateFullStoryLog() {
@@ -612,8 +450,7 @@ function updateFullStoryLog() {
         <div class="story-part">
           <h4>Part ${index + 1}</h4>
           <p>${part.replace(/\n/g, "<br>")}</p>
-        </div>
-      `
+        </div>`
       )
       .join("");
   }
@@ -625,22 +462,14 @@ function applyTheme(template) {
 
 function restartStoryHandler() {
   resetStoryState();
-
-  // Reset UI
   domElements.setupScreen.style.display = "block";
   domElements.requiredInfoText.style.display = "block";
   domElements.storyScreen.style.display = "none";
   domElements.wordCountControls.style.display = "none";
-  domElements.storyOutputDiv.innerHTML = "<p>Loading story...</p>";
-  domElements.choicesContainerDiv.innerHTML = "";
-  domElements.customChoiceContainer.style.display = "none";
-  domElements.customChoiceInput.value = "";
-  domElements.fullStoryLogDiv.style.display = "none";
-
-  // Clear input highlights
-  document.querySelectorAll(".invalid").forEach((el) => {
-    el.classList.remove("invalid");
-  });
+  document
+    .querySelectorAll(".invalid")
+    .forEach((el) => el.classList.remove("invalid"));
+  document.body.className = "";
 }
 
 function showShareModal() {
@@ -648,29 +477,12 @@ function showShareModal() {
     showAlert("No story to share yet!", "error");
     return;
   }
-
   domElements.shareModal.style.display = "block";
   domElements.shareLinkContainer.style.display = "none";
 }
 
 function hideShareModal() {
   domElements.shareModal.style.display = "none";
-}
-
-function handleSaveStory() {
-  try {
-    const storyId = saveStory();
-    showAlert("Story saved successfully!", "success");
-    loadSavedStories();
-    hideShareModal();
-  } catch (error) {
-    showAlert(`Failed to save story: ${error.message}`, "error");
-  }
-}
-
-function setLanguage(lang) {
-  storyState.config.language = lang;
-  localStorage.setItem("language", lang);
 }
 
 function copyStoryToClipboard() {
@@ -682,10 +494,7 @@ function copyStoryToClipboard() {
         showAlert("Story copied to clipboard!", "success");
         hideShareModal();
       })
-      .catch((err) => {
-        console.error("Failed to copy:", err);
-        showAlert("Failed to copy story to clipboard", "error");
-      });
+      .catch((err) => showAlert("Failed to copy story", "error"));
   } catch (error) {
     showAlert(`Error: ${error.message}`, "error");
   }
@@ -693,10 +502,9 @@ function copyStoryToClipboard() {
 
 function generateShareableLink() {
   try {
-    const storyId = saveStory();
-    const url = new URL(window.location.href);
+    const storyId = saveStoryFromGenerator(); // Ensure it's saved first
+    const url = new URL(window.location.origin + "/chapter-view.html"); // Link to the editor
     url.searchParams.set("story", storyId);
-
     domElements.shareLinkInput.value = url.toString();
     domElements.shareLinkContainer.style.display = "flex";
   } catch (error) {
@@ -710,30 +518,4 @@ function copyShareLink() {
   showAlert("Link copied to clipboard!", "success");
 }
 
-function showLoadStoryOptions() {
-  domElements.savedStoriesSelect.style.display =
-    domElements.savedStoriesSelect.style.display === "block" ? "none" : "block";
-}
-
-function loadSelectedStory() {
-  const storyId = domElements.savedStoriesSelect.value;
-  if (!storyId) return;
-
-  try {
-    // 1. Get the story data
-    const storyToLoad = loadStory(storyId);
-
-    // 2. Update the central state
-    updateStoryState(storyToLoad);
-
-    // 3. Render the entire story using our new function
-    renderLoadedStory(storyState);
-
-    showAlert("Story loaded successfully!", "success");
-  } catch (error) {
-    showAlert(`Failed to load story: ${error.message}`, "error");
-  }
-}
-
-// Initialize when DOM is ready
 document.addEventListener("DOMContentLoaded", initUI);

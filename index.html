@@ -3,373 +3,45 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Personalized Story Generator</title>
+    <title>AI Story Weaver</title>
     <link rel="stylesheet" href="style.css" />
-    <!-- Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <link rel="stylesheet" href="main.css" />
   </head>
-  <body id="story-body">
-    <div id="share-modal" class="modal">
-      <div class="modal-content">
-        <span class="close-modal">×</span>
-        <h3>Share Your Story</h3>
-        <div class="share-options">
-          <button class="share-option" id="save-story-btn">
-            <span class="icon">💾</span> Save to Browser
-          </button>
-          <button class="share-option" id="export-txt-btn">
-            <span class="icon">📄</span> Export as TXT
-          </button>
-          <button class="share-option" id="export-pdf-btn">
-            <span class="icon">📊</span> Export as PDF
-          </button>
-          <button class="share-option" id="export-epub-btn">
-            <span class="icon">📚</span> Export as EPUB
-          </button>
-          <button class="share-option" id="copy-story-btn">
-            <span class="icon">📋</span> Copy to Clipboard
-          </button>
-          <button class="share-option" id="share-link-btn">
-            <span class="icon">🔗</span> Generate Shareable Link
-          </button>
-        </div>
-        <div id="share-link-container" style="display: none">
-          <input type="text" id="share-link-input" readonly /><button
-            id="copy-link-btn"
-          >
-            Copy Link
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- MAIN CONTAINER -->
+  <body>
     <div class="container">
-      <h1>Personalized Story Generator</h1>
+      <header class="main-header">
+        <h1>AI Story Weaver</h1>
+        <p class="subtitle">Your collaborative storytelling partner</p>
+      </header>
 
-      <!-- API Key Section -->
-      <div id="api-key-section">
-        <label for="apiKey">Gemini API Key:</label>
-        <input
-          type="password"
-          id="apiKey"
-          placeholder="Enter your Gemini API Key"
-        />
-        <button id="saveApiKey">Save Key</button>
-        <p>
-          <small
-            >Get your API key from
-            <a href="https://aistudio.google.com/app/apikey" target="_blank"
-              >Google AI Studio</a
-            >.</small
-          >
-        </p>
-      </div>
+      <div class="nav-grid">
+        <a href="create.html" class="nav-card">
+          <div class="nav-card-icon">✨</div>
+          <h2 class="nav-card-title">New Guided Story</h2>
+          <p class="nav-card-description">
+            Answer a few questions and let the AI kickstart your adventure with
+            a turn-by-turn story.
+          </p>
+        </a>
 
-      <!-- Required info (Always Visible) -->
-      <div id="required-info">
-        <h3 style="text-align: left">Required Information:</h3>
+        <a href="chapter-view.html" class="nav-card">
+          <div class="nav-card-icon">📖</div>
+          <h2 class="nav-card-title">Open Chapter Editor</h2>
+          <p class="nav-card-description">
+            Create, edit, and manage your stories chapter by chapter in a
+            full-featured editor.
+          </p>
+        </a>
 
-        <p style="text-align: left">
-          <strong>Protagonist's Name:</strong> The main character in your story.
-        </p>
-        <p style="text-align: left">
-          <strong>Setting Location:</strong> The place where the story takes
-          place.
-        </p>
-        <p style="text-align: left">
-          <strong>Conflict Description:</strong> The main challenge or problem
-          the protagonist faces.
-        </p>
-      </div>
-
-      <!-- Setup Screen with Collapsible Sections -->
-      <div id="setup-screen">
-        <h2 style="text-align: left">Create Your Story</h2>
-
-        <!-- CORE DETAILS (Always Visible) -->
-        <label for="story-template">Story Template:</label>
-        <select id="story-template">
-          <option value="adventure">Adventure</option>
-          <option value="mystery">Mystery</option>
-          <option value="fantasy">Fantasy</option>
-          <option value="sci-fi">Sci-Fi</option>
-        </select>
-
-        <label for="story-type">Story Length:</label>
-        <select id="story-type">
-          <option value="short-story">Short Story (approx. 5 turns)</option>
-          <option value="novel">Novel (infinite turns)</option>
-        </select>
-
-        <label for="protagonist-name">Protagonist's Name:</label>
-        <div class="input-with-randomizer">
-          <input
-            type="text"
-            id="protagonist-name"
-            placeholder="e.g., Kaelen"
-            required
-          />
-          <button
-            class="randomize-btn"
-            data-target="protagonist-name"
-            title="Randomize Name"
-          >
-            🎲
-          </button>
-        </div>
-
-        <!-- Collapsible Sections -->
-
-        <!-- Protagonist Details -->
-        <details class="collapsible-section" open>
-          <summary><h3>Protagonist Details</h3></summary>
-          <div class="collapsible-content">
-            <label for="protagonist-age">Age:</label>
-            <input type="number" id="protagonist-age" placeholder="e.g., 25" />
-            <label for="protagonist-occupation">Occupation:</label>
-            <div class="input-with-randomizer">
-              <input
-                type="text"
-                id="protagonist-occupation"
-                placeholder="e.g., Star-charting Librarian"
-              />
-              <button
-                class="randomize-btn"
-                data-target="protagonist-occupation"
-                title="Randomize Occupation"
-              >
-                🎲
-              </button>
-            </div>
-          </div>
-        </details>
-
-        <!-- World & Conflict -->
-        <details class="collapsible-section" open>
-          <summary><h3>World & Conflict</h3></summary>
-          <div class="collapsible-content">
-            <label for="setting-location">Location:</label>
-            <div class="input-with-randomizer">
-              <input
-                type="text"
-                id="setting-location"
-                placeholder="e.g., The Sunken City of Aeridor"
-                required
-              />
-              <button
-                class="randomize-btn"
-                data-target="setting-location"
-                title="Randomize Location"
-              >
-                🎲
-              </button>
-            </div>
-            <label for="setting-time">Time Period:</label>
-            <div class="input-with-randomizer">
-              <input
-                type="text"
-                id="setting-time"
-                placeholder="e.g., The Age of Shattered Moons"
-              />
-              <button
-                class="randomize-btn"
-                data-target="setting-time"
-                title="Randomize Time Period"
-              >
-                🎲
-              </button>
-            </div>
-            <label for="conflict-description">Main Conflict:</label>
-            <div class="input-with-randomizer">
-              <textarea
-                id="conflict-description"
-                placeholder="e.g., To find the cure for the star-plague"
-                required
-              ></textarea>
-              <button
-                class="randomize-btn"
-                data-target="conflict"
-                title="Randomize Conflict"
-              >
-                🎲
-              </button>
-            </div>
-          </div>
-        </details>
-
-        <!-- Additional Characters -->
-        <details class="collapsible-section">
-          <summary><h3>Additional Characters</h3></summary>
-          <div class="collapsible-content">
-            <h4>Sidekick (Optional)</h4>
-            <div class="input-with-randomizer">
-              <input
-                type="text"
-                id="sidekick-name"
-                placeholder="Name (e.g., Zorp)"
-              />
-              <button
-                class="randomize-btn"
-                data-target="sidekick-name"
-                title="Randomize Sidekick Name"
-              >
-                🎲
-              </button>
-            </div>
-            <div class="input-with-randomizer">
-              <input
-                type="text"
-                id="sidekick-personality"
-                placeholder="Personality (e.g., A cynical but loyal robot)"
-              />
-              <button
-                class="randomize-btn"
-                data-target="sidekick-personality"
-                title="Randomize Sidekick Personality"
-              >
-                🎲
-              </button>
-            </div>
-            <h4>Antagonist (Optional)</h4>
-            <div class="input-with-randomizer">
-              <input
-                type="text"
-                id="antagonist-name"
-                placeholder="Name (e.g., The Void-Chancellor)"
-              />
-              <button
-                class="randomize-btn"
-                data-target="antagonist-name"
-                title="Randomize Antagonist Name"
-              >
-                🎲
-              </button>
-            </div>
-            <div class="input-with-randomizer">
-              <input
-                type="text"
-                id="antagonist-traits"
-                placeholder="Traits (e.g., A being of pure energy)"
-              />
-              <button
-                class="randomize-btn"
-                data-target="antagonist-traits"
-                title="Randomize Antagonist Traits"
-              >
-                🎲
-              </button>
-            </div>
-            <div class="input-with-randomizer">
-              <input
-                type="text"
-                id="antagonist-motivation"
-                placeholder="Motivation (e.g., To consume all stars for power)"
-              />
-              <button
-                class="randomize-btn"
-                data-target="antagonist-motivation"
-                title="Randomize Antagonist Motivation"
-              >
-                🎲
-              </button>
-            </div>
-          </div>
-        </details>
-
-        <!-- Advanced & Saved Stories -->
-        <details class="collapsible-section">
-          <summary><h3>Advanced & Saved Stories</h3></summary>
-          <div class="collapsible-content">
-            <label for="language">Language:</label>
-            <input type="text" id="language" placeholder="e.g., English" />
-
-            <h4>Story Library</h4>
-            <p>View, load, or delete your previously saved adventures.</p>
-            <a
-              href="library.html"
-              id="library-link-btn"
-              class="button-style"
-              role="button"
-            >
-              Open My Story Library
-            </a>
-          </div>
-        </details>
-        <!-- End of Collapsible Sections -->
-
-        <button id="start-story-btn">Start My Story!</button>
-      </div>
-
-      <!-- Story Screen -->
-      <div id="story-screen" style="display: none">
-        <h2 id="story-title">Your Story Unfolds...</h2>
-        <div id="story-output"><p>Loading story...</p></div>
-        <div id="choices-container"></div>
-        <div id="custom-choice-container" style="display: none">
-          <textarea
-            id="custom-choice-input"
-            placeholder="What do you do next?"
-          ></textarea>
-          <div class="custom-choice-actions">
-            <button id="submit-custom-choice-btn">Submit My Action</button>
-            <button id="cancel-custom-choice-btn" type="button">Cancel</button>
-          </div>
-        </div>
-
-        <div id="word-count-controls" style="display: none">
-          <label for="min-words-input">Word Count:</label>
-          <input
-            type="number"
-            id="min-words-input"
-            min="50"
-            max="800"
-            step="10"
-          />
-          <span>-</span>
-          <input
-            type="number"
-            id="max-words-input"
-            min="51"
-            max="801"
-            step="10"
-          />
-          <span>words</span>
-        </div>
-
-        <div id="story-controls">
-          <button id="read-aloud-btn">Read Aloud</button>
-          <button id="restart-btn">Start New Story</button>
-          <button id="share-story-btn">Share Story</button>
-        </div>
-        <button id="toggle-full-story-btn">Show Full Story</button>
-        <div id="full-story-log" style="display: none">
-          <h3>Full Story So Far:</h3>
-          <div id="full-story-content"></div>
-        </div>
+        <a href="library.html" class="nav-card">
+          <div class="nav-card-icon">📚</div>
+          <h2 class="nav-card-title">My Story Library</h2>
+          <p class="nav-card-description">
+            View all your saved stories. Load them into the editor to continue
+            your work.
+          </p>
+        </a>
       </div>
     </div>
-
-    <!-- Scripts -->
-    <script type="module" src="src/api.js"></script>
-    <script type="module" src="src/story.js"></script>
-    <script type="module" src="src/state.js"></script>
-    <script type="module" src="src/storage.js"></script>
-    <script type="module" src="src/export.js"></script>
-    <script type="module" src="src/ui.js"></script>
-
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const languageInput = document.getElementById("language");
-        const savedLanguage = localStorage.getItem("language") || "English";
-        languageInput.value = savedLanguage;
-
-        languageInput.addEventListener("input", (e) => {
-          localStorage.setItem("language", e.target.value);
-        });
-      });
-    </script>
   </body>
 </html>

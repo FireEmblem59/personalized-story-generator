@@ -52,26 +52,36 @@ function createStoryCard(story) {
   // Populate the card with story data
   titleEl.textContent = story.title || "Untitled Story";
 
-  // Create a short excerpt from the first part of the story
-  const firstPart = story.history[0] || "No content available.";
+  // Create a short excerpt from the first part/chapter of the story
+  let excerptText = "No content available.";
+  if (story.chapters && story.chapters[0] && story.chapters[0].content) {
+    excerptText = story.chapters[0].content;
+  } else if (story.history && story.history[0]) {
+    // Backwards compatibility for old format
+    excerptText = story.history.join("\n\n");
+  }
   excerptEl.textContent =
-    firstPart.length > 150 ? firstPart.substring(0, 150) + "…" : firstPart;
+    excerptText.length > 150
+      ? excerptText.substring(0, 150) + "…"
+      : excerptText;
 
   // Format the saved date for display
   dateEl.textContent = `Saved: ${new Date(story.savedAt).toLocaleDateString()}`;
 
   // --- Event Listeners for Card Buttons ---
 
-  // Load Button: Navigates back to the main page with a URL parameter
+  // Load Button: Navigates to the chapter view with a URL parameter
   loadBtn.addEventListener("click", () => {
-    // This tells index.html which story to load upon arrival
-    window.location.href = `index.html?story=${story.id}`;
+    // This tells chapter-view.html which story to load upon arrival
+    window.location.href = `chapter-view.html?story=${story.id}`;
   });
 
   // Delete Button: Asks for confirmation before deleting
   deleteBtn.addEventListener("click", () => {
     const isConfirmed = confirm(
-      `Are you sure you want to permanently delete "${story.title}"?`
+      `Are you sure you want to permanently delete "${
+        story.title || "this story"
+      }"?`
     );
     if (isConfirmed) {
       deleteStory(story.id);

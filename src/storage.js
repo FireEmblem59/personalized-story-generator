@@ -1,4 +1,4 @@
-import { storyState } from "./state.js";
+import { storyState, updateStoryState } from "./state.js";
 
 const STORAGE_KEY = "aiStories";
 const API_KEY = "geminiApiKey";
@@ -35,7 +35,6 @@ export function saveStoryFromGenerator() {
     existingStory.chapters[0].content = storyState.history.join("\n\n");
     existingStory.savedAt = new Date().toISOString();
 
-    // Ensure language and details are carried over
     existingStory.language = storyState.config.language;
     existingStory.details = storyState.details;
 
@@ -46,7 +45,6 @@ export function saveStoryFromGenerator() {
       id: storyId,
       title: `${storyState.details.protagonist.name}'s ${storyState.config.template} Adventure`,
       savedAt: new Date().toISOString(),
-      // Save language and details for AI context
       language: storyState.config.language || "English",
       details: storyState.details,
       chapters: [

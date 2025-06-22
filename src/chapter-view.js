@@ -10,6 +10,8 @@ import {
 
 import { exportToTxt, exportToPdf, exportToEpub } from "./export.js";
 
+import { saveStoryToFirebase, loadStoryFromFirebase } from "./firebase.js";
+
 // --- STATE MANAGEMENT ---
 let stories = [];
 let currentStoryId = null;
@@ -80,7 +82,7 @@ function init() {
     "generate-continuation-btn"
   );
 
-  // --- NEW --- Share Modal Elements
+  // Share Modal Elements
   dom.shareStoryModal = document.getElementById("share-story-modal");
   dom.closeShareModalBtn = document.getElementById("close-share-modal");
   dom.shareStoryBtn = document.getElementById("share-story-btn-cv");
@@ -88,6 +90,10 @@ function init() {
   dom.exportPdfBtn = document.getElementById("export-pdf-btn-cv");
   dom.exportEpubBtn = document.getElementById("export-epub-btn-cv");
   dom.copyStoryBtn = document.getElementById("copy-story-btn-cv");
+  dom.shareLinkBtn = document.getElementById("share-link-btn-cv");
+  dom.shareLinkContainer = document.getElementById("share-link-container-cv");
+  dom.shareLinkInput = document.getElementById("share-link-input-cv");
+  dom.copyLinkBtn = document.getElementById("copy-link-btn-cv");
 
   // AI Toolbar
   dom.aiRewriteBtn = document.getElementById("ai-rewrite-btn");
@@ -222,6 +228,8 @@ function registerEventListeners() {
   dom.exportPdfBtn.addEventListener("click", handleExportPdf);
   dom.exportEpubBtn.addEventListener("click", handleExportEpub);
   dom.copyStoryBtn.addEventListener("click", handleCopyStory);
+  dom.shareLinkBtn.addEventListener("click", handleGenerateShareLink);
+  dom.copyLinkBtn.addEventListener("click", handleCopyShareLink);
 }
 
 function handleSaveApiKey() {
@@ -234,20 +242,68 @@ function handleSaveApiKey() {
   checkApiKey();
 }
 
-function loadStoryFromURL() {
+async function loadStoryFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
   const storyId = urlParams.get("story");
-  if (storyId) {
-    if (stories.some((s) => s.id === storyId)) {
-      dom.storySelect.value = storyId;
-      handleStorySelect();
-    } else {
-      showAlert("Story from link not found.", "error");
+  if (!storyId) return;
+
+  // First, check local stories for a match (for user's own stories)
+  let storyToLoad = stories.find((s) => s.id === storyId);
+
+  // If not found locally, it must be a shared link, so try Firebase
+  if (!storyToLoad) {
+    showAlert(
+      "Story not in local library. Checking for a shared link...",
+      "info"
+    );
+    storyToLoad = await loadStoryFromFirebase(storyId);
+    if (storyToLoad) {
+      // If we load it, we should also save it locally so the user has it.
+      // This is optional but good UX.
+      saveFullStory(storyToLoad);
+      loadAndRenderStories(); // Refresh the story list
     }
-    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+
+  if (storyToLoad) {
+    dom.storySelect.value = storyToLoad.id;
+    handleStorySelect();
+    showAlert("Shared story loaded successfully!", "success");
+  } else {
+    showAlert("Error: Story could not be found.", "error");
+  }
+
+  window.history.replaceState({}, document.title, window.location.pathname);
+}
+
+async function handleGenerateShareLink() {
+  if (!currentStoryId) return;
+  const story = stories.find((s) => s.id === currentStoryId);
+  if (!story) return;
+
+  try {
+    showAlert("Generating public share link...", "info");
+    // Save the current story state to Firebase
+    const publicId = await saveStoryToFirebase(story);
+
+    // Create the URL
+    const url = new URL(window.location.href);
+    url.search = `?story=${publicId}`; // Clean any other params
+
+    dom.shareLinkInput.value = url.toString();
+    dom.shareLinkContainer.style.display = "flex";
+    document.querySelector(".alert-info")?.remove(); // Remove loading alert
+  } catch (error) {
+    console.error("Error generating share link:", error);
+    showAlert("Could not create share link. Please try again.", "error");
   }
 }
 
+function handleCopyShareLink() {
+  dom.shareLinkInput.select();
+  document.execCommand("copy");
+  showAlert("Link copied to clipboard!", "success");
+}
 // Share and Export Handlers
 
 function showShareModal() {

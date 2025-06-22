@@ -10,6 +10,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-firestore-compat.js"></script>
   </head>
   <body>
     <!-- AI Guidance Modal -->
@@ -68,6 +71,19 @@
           </button>
           <button class="share-option" id="copy-story-btn-cv">
             <span class="icon">📋</span> Copy to Clipboard
+          </button>
+          <!-- --- THIS IS THE MISSING BUTTON --- -->
+          <button class="share-option" id="share-link-btn-cv">
+            <span class="icon">🔗</span> Generate Shareable Link
+          </button>
+        </div>
+
+        <!-- This container is for the generated link -->
+        <div id="share-link-container-cv" style="display: none">
+          <input type="text" id="share-link-input-cv" readonly /><button
+            id="copy-link-btn-cv"
+          >
+            Copy Link
           </button>
         </div>
       </div>
@@ -157,6 +173,7 @@
     </div>
 
     <!-- Scripts -->
+    <script type="module" src="src/firebase.js"></script>
     <script type="module" src="src/api.js"></script>
     <script type="module" src="src/storage.js"></script>
     <script type="module" src="src/export.js"></script>
